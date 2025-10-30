@@ -1,0 +1,87 @@
+@extends('layouts.main')
+
+@section('title', 'Tambah Jenis Dokumen | Regna')
+
+@section('content')
+<section id="tambah-jenis" class="py-5" style="background: linear-gradient(to bottom right, #f5faff, #e6f0ff); min-height: 100vh;">
+  <div class="container" data-aos="fade-up">
+
+    <!-- Header Halaman -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-2" style="color:#0056d2;">📝 Tambah Jenis Dokumen</h2>
+      <p class="text-secondary fs-5">Tambahkan jenis dokumen baru ke dalam sistem.</p>
+      <div class="mx-auto" style="width:100px; height:4px; background:linear-gradient(90deg, #007bff, #00c6ff); border-radius:2px;"></div>
+    </div>
+
+    <!-- Kartu Form -->
+    <div class="card border-0 shadow-lg rounded-5 overflow-hidden mx-auto" style="background:white; max-width: 600px;">
+      <div class="card-header text-white fw-semibold px-4 py-3 text-center"
+           style="background: linear-gradient(90deg, #007bff, #00c6ff);">
+        <i class="bi bi-plus-circle me-2"></i>Form Tambah Jenis Dokumen
+      </div>
+
+      <div class="card-body p-4">
+        <form action="{{ route('jenis.store') }}" method="POST">
+          @csrf
+          <div class="mb-4">
+            <label for="nama_jenis" class="form-label fw-semibold">Nama Jenis Dokumen <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rounded-4 @error('nama_jenis') is-invalid @enderror"
+                   id="nama_jenis" name="nama_jenis" value="{{ old('nama_jenis') }}"
+                   placeholder="Masukkan nama jenis dokumen" required>
+            @error('nama_jenis')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="mb-4">
+            <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
+            <textarea class="form-control rounded-4 @error('deskripsi') is-invalid @enderror"
+                      id="deskripsi" name="deskripsi" rows="4"
+                      placeholder="Masukkan deskripsi jenis dokumen">{{ old('deskripsi') }}</textarea>
+            @error('deskripsi')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{{ route('jenis.index') }}" class="btn btn-secondary rounded-pill px-4">
+              <i class="bi bi-arrow-left me-1"></i>Kembali
+            </a>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">
+              <i class="bi bi-save me-1"></i>Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  section#tambah-jenis {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .form-control {
+    border: 1px solid #e0e0e0;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+</style>
+@endsection

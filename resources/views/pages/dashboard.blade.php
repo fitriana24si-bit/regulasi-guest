@@ -6,7 +6,14 @@
 <section id="dashboard" class="py-5">
   <div class="container text-center" data-aos="fade-up">
     <h2 class="fw-bold mb-4 text-primary">Selamat Datang di Dashboard</h2>
-    <p class="text-secondary">Anda sudah masuk sebagai <strong>{{Auth::user()->name}}</strong></p>
+    @if(Auth::check())
+    <p class="text-secondary">
+        Anda sudah masuk sebagai <strong>{{ Auth::user()->name }}</strong>
+    </p>
+@else
+    <p class="text-secondary">
+        Anda belum login.</p>
+@endif
 
     {{-- Tombol Logout --}}
     <form action="{{ route('logout') }}" method="POST" class="d-inline">
