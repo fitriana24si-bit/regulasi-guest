@@ -24,8 +24,8 @@
                     <li><a class="nav-link {{ request()->routeIs('lampiran.index') ? 'active' : '' }}"
                             href="{{ route('lampiran.index') }}"><i class="bi bi-paperclip"></i> Lampiran Dokumen</a>
                     </li>
-                    <li><a class="nav-link {{ request()->routeIs('login.index') ? 'active' : '' }}"
-                            href="{{ route('login.index') }}">
+                    <li><a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}"
+                            href="{{ route('login') }}">
                             <i class="bi bi-box-arrow-in-right"></i> Login
                         </a></li>
                 </ul>

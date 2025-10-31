@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.guest.main')
 
 @section('title', 'Daftar Akun | Regna')
 
@@ -71,7 +71,7 @@
 
                         <div class="text-center mt-4">
                             <small class="text-muted">Sudah punya akun?
-                                <a href="{{ route('login.index') }}" class="text-decoration-none text-primary fw-semibold">
+                                <a href="{{ route('login') }}" class="text-decoration-none text-primary fw-semibold">
                                     Masuk di sini
                                 </a>
                             </small>

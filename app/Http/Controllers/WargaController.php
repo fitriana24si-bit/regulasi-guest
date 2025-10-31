@@ -10,12 +10,12 @@ class WargaController extends Controller
     public function index()
     {
         $warga = Warga::all();
-        return view('guest.warga.index', compact('warga'));
+        return view('pages.warga.index', compact('warga')); // Sesuaikan path
     }
 
     public function create()
     {
-        return view('guest.warga.create');
+        return view('pages.warga.create'); // Sesuaikan path
     }
 
     public function store(Request $request)
@@ -37,28 +37,26 @@ class WargaController extends Controller
     public function edit($id)
     {
         $warga = Warga::findOrFail($id);
-        return view('guest.warga.edit', compact('warga'));
+        return view('pages.warga.edit', compact('warga')); // Sesuaikan path
     }
 
     public function update(Request $request, $id)
-{
-    $warga = Warga::findOrFail($id);
+    {
+        $warga = Warga::findOrFail($id);
 
-    $request->validate([
-        // perbaikan ada di bagian unique -> tambahkan ,warga_id
-        'no_ktp' => 'required|unique:warga,no_ktp,' . $id . ',warga_id',
-        'nama' => 'required',
-        'jenis_kelamin' => 'required',
-        'agama' => 'required',
-        'pekerjaan' => 'required',
-        'telp' => 'required',
-        'email' => 'required|email|unique:warga,email,' . $id . ',warga_id',
-    ]);
+        $request->validate([
+            'no_ktp' => 'required|unique:warga,no_ktp,' . $id . ',warga_id',
+            'nama' => 'required',
+            'jenis_kelamin' => 'required',
+            'agama' => 'required',
+            'pekerjaan' => 'required',
+            'telp' => 'required',
+            'email' => 'required|email|unique:warga,email,' . $id . ',warga_id',
+        ]);
 
-    $warga->update($request->all());
-    return redirect()->route('warga.index')->with('success', 'Data warga berhasil diperbarui!');
-}
-
+        $warga->update($request->all());
+        return redirect()->route('warga.index')->with('success', 'Data warga berhasil diperbarui!');
+    }
 
     public function destroy($id)
     {

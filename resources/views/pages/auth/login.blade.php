@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.guest.main')
 
 @section('title', 'Login')
 
@@ -42,7 +42,7 @@
         </form>
 
         <div class="text-center mt-3">
-            <small>Belum punya akun? <a href="{{ route('register.index') }}">Daftar</a></small>
+            <small>Belum punya akun? <a href="{{ route('register') }}">Daftar</a></small>
         </div>
     </div>
 </div>

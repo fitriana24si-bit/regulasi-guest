@@ -13,7 +13,7 @@ class AuthController extends Controller
     // tampilkan form login
     public function showLogin()
     {
-        return view('pages.login');
+        return view('pages.auth.login'); // Sesuaikan path
     }
 
     // proses login
@@ -26,8 +26,8 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            // setelah login arahkan ke pages.jenis (route name: jenis.index)
-            return redirect()->route('jenis.index');
+            // Redirect ke dashboard admin setelah login
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
@@ -38,7 +38,7 @@ class AuthController extends Controller
     // tampilkan form register
     public function showRegister()
     {
-        return view('pages.register');
+        return view('pages.auth.register'); // Sesuaikan path
     }
 
     // proses registrasi
@@ -58,7 +58,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('jenis.index');
+        // Redirect ke dashboard admin setelah register
+        return redirect()->route('dashboard');
     }
 
     // logout
@@ -67,6 +68,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login.index');
+        return redirect()->route('jenis'); // Kembali ke halaman home guest
     }
 }
