@@ -6,9 +6,11 @@ use App\Http\Controllers\RegnaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WargaController;
 
+
+
 // ================== Halaman Utama ==================
 Route::get('/', [RegnaController::class, 'dashboard'])->name('dashboard');
-Route::get('/dashboard', [RegnaController::class, 'dashboard'])->name('dashboard');
+
 
 // ================== Halaman Regna ==================
 Route::prefix('jenis')->group(function () {
@@ -41,4 +43,16 @@ Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index
 Route::get('/lampiran', [RegnaController::class, 'lampiran'])->name('lampiran.index');
 
 // ================== Resource Controller ==================
-Route::resource('warga', WargaController::class);
+// Tampilkan semua data
+Route::get('/warga', [WargaController::class, 'index'])->name('warga.index');
+// Form tambah
+Route::get('/warga/create', [WargaController::class, 'create'])->name('warga.create');
+// Simpan data
+Route::post('/warga', [WargaController::class, 'store'])->name('warga.store');
+// Form edi
+Route::get('/warga/{id}/edit', [WargaController::class, 'edit'])->name('warga.edit');
+// Update data
+Route::put('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');
+Route::patch('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');
+// Hapus
+Route::delete('/warga/{id}', [WargaController::class, 'destroy'])->name('warga.destroy');

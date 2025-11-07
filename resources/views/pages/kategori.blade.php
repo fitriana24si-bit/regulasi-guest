@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.guest.main')
 
 @section('title', 'Kategori Dokumen | Regna')
 
@@ -59,4 +59,3 @@
   }
 </style>
 @endsection
-    

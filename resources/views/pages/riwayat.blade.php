@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.guest.main')
 
 @section('title', 'Riwayat Perubahan | Regna')
 

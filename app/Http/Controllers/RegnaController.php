@@ -17,7 +17,7 @@ class RegnaController extends Controller
     public function jenis()
     {
         $jenisDokumen = JenisDokumen::all();
-        return view('pages.jenis.index', compact('jenisDokumen')); // Sesuaikan path
+        return view('pages.jenis', compact('jenisDokumen')); // Sesuaikan path
     }
 
     public function jenisCreate()
@@ -75,21 +75,21 @@ class RegnaController extends Controller
 
     public function kategori()
     {
-        return view('pages.kategori.index'); // Sesuaikan path
+        return view('pages.kategori'); // Sesuaikan path
     }
 
     public function dokumen()
     {
-        return view('pages.dokumen.index'); // Sesuaikan path
+        return view('pages.dokumen'); // Sesuaikan path
     }
 
     public function riwayat()
     {
-        return view('pages.riwayat.index'); // Sesuaikan path
+        return view('pages.riwayat'); // Sesuaikan path
     }
 
     public function lampiran()
     {
-        return view('pages.lampiran.index'); // Sesuaikan path
+        return view('pages.lampiran'); // Sesuaikan path
     }
 }

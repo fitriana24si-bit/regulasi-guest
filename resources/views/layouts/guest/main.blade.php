@@ -11,9 +11,10 @@
     {{-- End heade --}}
 
     <!-- Content -->
-    <main class="container py-5">
-        @yield('content')
-    </main>
+ <main class="w-100 p-0 m-0">
+    @yield('content')
+</main>
+
 
     <!-- start Footer -->
     @include('layouts.guest.footer')

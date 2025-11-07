@@ -1,27 +1,24 @@
 @extends('layouts.guest.main')
 
 @section('title', 'Dashboard | Regna')
-
+@include('layouts.guest.css')
 @section('content')
-<section id="dashboard" class="py-5">
-  <div class="container text-center" data-aos="fade-up">
-    <h2 class="fw-bold mb-4 text-primary">Selamat Datang di Dashboard</h2>
-    @if(Auth::check())
-    <p class="text-secondary">
-        Anda sudah masuk sebagai <strong>{{ Auth::user()->name }}</strong>
-    </p>
-@else
-    <p class="text-secondary">
-        Anda belum login.</p>
-@endif
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
 
-    {{-- Tombol Logout --}}
-    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-      @csrf
-      <button type="submit" class="btn btn-danger mt-3">
-        <i class="bi bi-box-arrow-right"></i> Logout
-      </button>
-    </form>
-  </div>
+      <img src="https://img.freepik.com/foto-gratis/pemandangan-pegunungan-dengan-kabut_1150-18328.jpg" alt="" data-aos="fade-in">
+
+      <div class="container text-center" data-aos="fade-up" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2>Selamat Datang Di Website Regulasi Desa</h2>
+            <p>Ini adalah halaman utama</p>
+            <a href="#about" class="btn-get-started">Mulai Sekarang</a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
 </section>
 @endsection
