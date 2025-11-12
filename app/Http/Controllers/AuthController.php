@@ -17,23 +17,29 @@ class AuthController extends Controller
     }
 
     // proses login
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required'],
-        ]);
+   public function login(Request $request)
+{
+    $request->validate([
+        'email' => ['required','email'],
+        'password' => ['required'],
+    ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            // Redirect ke dashboard admin setelah login
-            return redirect()->route('dashboard');
-        }
+    // cari user berdasarkan email
+    $user = User::where('email', $request->email)->first();
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+    // cek user dan verifikasi password dengan Hash::check
+    if ($user && Hash::check($request->password, $user->password)) {
+        Auth::login($user);
+        $request->session()->regenerate();
+        return redirect()->route('dashboard')->with('success', 'Berhasil login!');
+
     }
+
+    return back()->withErrors([
+        'email' => 'Email atau password salah.',
+    ])->onlyInput('email');
+}
+
 
     // tampilkan form register
     public function showRegister()
@@ -59,7 +65,8 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect ke dashboard admin setelah register
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat!');
+
     }
 
     // logout
@@ -68,6 +75,9 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('jenis'); // Kembali ke halaman home guest
+       return redirect()->route('login')->with('success', 'Anda telah logout.');
+
+
     }
+
 }

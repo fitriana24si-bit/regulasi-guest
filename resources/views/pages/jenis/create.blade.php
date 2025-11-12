@@ -1,9 +1,10 @@
 @extends('layouts.guest.main')
+@include('layouts.guest.css')
 
 @section('title', 'Tambah Jenis Dokumen | Regna')
 
 @section('content')
-<section id="tambah-jenis" class="py-5" style="background: linear-gradient(to bottom right, #f5faff, #e6f0ff); min-height: 100vh;">
+<section id="tambah-jenis" class="py-7" style="background: linear-gradient(to bottom right, #105fae, #e6f0ff); min-height: 100vh;">
   <div class="container" data-aos="fade-up">
 
     <!-- Header Halaman -->
@@ -58,30 +59,5 @@
   </div>
 </section>
 
-<style>
-  section#tambah-jenis {
-    animation: fadeInUp 0.6s ease-out;
-  }
 
-  .form-control {
-    border: 1px solid #e0e0e0;
-    padding: 12px 16px;
-    transition: all 0.3s ease;
-  }
-
-  .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
-  }
-
-  .btn {
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-
-  .btn:hover {
-    transform: translateY(-2px);
-  }
-</style>
 @endsection

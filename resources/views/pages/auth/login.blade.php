@@ -3,6 +3,7 @@
 @section('title', 'Login')
 
 @section('content')
+
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
     <div class="card shadow p-4" style="width:420px;">
         <h4 class="mb-3 text-center">Login</h4>
@@ -44,6 +45,7 @@
         <div class="text-center mt-3">
             <small>Belum punya akun? <a href="{{ route('register') }}">Daftar</a></small>
         </div>
+
     </div>
 </div>
 @endsection

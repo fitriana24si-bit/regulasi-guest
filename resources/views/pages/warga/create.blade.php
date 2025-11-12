@@ -3,17 +3,17 @@
 @section('title', 'Tambah Data Warga | Regna')
 
 @section('content')
-<section id="tambah-warga" class="py-5" style="background: linear-gradient(to bottom right, #f5faff, #e6f0ff); min-height: 100vh;">
+<section id="tambah-warga" class="py-7" style="background: linear-gradient(to bottom right, #c97c17, #e6f0ff); min-height: 100vh;">
   <div class="container" data-aos="fade-up">
 
     <!-- Header Halaman -->
     <div class="text-center mb-5">
-      <h1 class="fw-bold mb-2" style="color:#0056d2;">Tambah Data Warga</h1>
-      <div class="mx-auto" style="width:100px; height:4px; background:linear-gradient(90deg, #007bff, #00c6ff); border-radius:2px;"></div>
+      <h1 class="fw-bold mb-2" style="color:#ffffff;">Tambah Data Warga</h1>
+      <div class="mx-auto" style="width:100px; height:4px; background:linear-gradient(90deg, #dd942d, #ffffff); border-radius:2px;"></div>
     </div>
 
     <!-- Kartu Form -->
-    <div class="card border-0 shadow-lg rounded-5 overflow-hidden mx-auto" style="background:white; max-width: 800px;">
+    <div class="card border-0 shadow-lg rounded-5 overflow-hidden mx-auto" style="background:rgb(255, 255, 255); max-width: 800px;">
       <div class="card-header text-white fw-semibold px-4 py-3 text-center"
            style="background: linear-gradient(90deg, #007bff, #00c6ff);">
         <i class="bi bi-person-plus me-2"></i>Form Tambah Data Warga
@@ -139,8 +139,8 @@
   }
 
   .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+    border-color: #b9542c;
+    box-shadow: 0 0 0 0.2rem rgba(180, 89, 14, 0.1);
   }
 
   .btn {

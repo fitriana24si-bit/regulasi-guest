@@ -3,7 +3,7 @@
 @section('title', 'Lampiran Dokumen | Regna')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid py-7 mt-5 lampiran-container">
     <!-- Header Section -->
     <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center">
@@ -202,7 +202,7 @@
     </div>
 
     <!-- Table View -->
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -292,6 +292,12 @@
 </div>
 
 <style>
+/* 🟢 Tambahkan jarak aman dari navbar (diperbesar agar tidak dempet) */
+.lampiran-container {
+    margin-top: 120px; /* sebelumnya 90px, sekarang lebih lega */
+}
+
+/* Sisanya tetap sama */
 .file-card {
     transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 10px;
@@ -348,45 +354,4 @@
     margin: 0 2px;
 }
 </style>
-
-<script>
-// Filter button functionality
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filter-btn').forEach(b => {
-            b.classList.remove('active');
-        });
-        this.classList.add('active');
-    });
-});
-
-// Add hover effects to table rows
-document.querySelectorAll('tbody tr').forEach(row => {
-    row.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = 'rgba(220, 53, 69, 0.05)';
-    });
-
-    row.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = '';
-    });
-});
-
-// Search functionality
-const searchInput = document.querySelector('input[type="text"]');
-if (searchInput) {
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
-
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            if (text.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-}
-</script>
 @endsection

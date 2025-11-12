@@ -82,15 +82,6 @@
         </div>
     </div>
 
-    <style>
-        .card {
-            background: #ffffff;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-        }
-    </style>
+   
 </section>
 @endsection

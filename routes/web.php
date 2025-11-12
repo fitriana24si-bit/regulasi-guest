@@ -1,16 +1,58 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegnaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WargaController;
 
+// ================== Halaman About ==================
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
 
+// ================== Halaman User ==================
+// Menampilkan data user yang sedang login dalam card
+Route::middleware('auth')->group(function () {
+    Route::get('/user', function () {
+        $user = Auth::user();
+        return view('pages.user', compact('user'));
+    })->name('user');
+
+    // Edit profil user yang sedang login
+    Route::get('/user/edit', function () {
+        $user = Auth::user();
+        return view('pages.user.edit', compact('user'));
+    })->name('user.edit');
+
+    // Update profil user
+    Route::post('/user/update', function (Request $request) {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'nullable|confirmed|min:6',
+        ]);
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('user')->with('success', 'Profil berhasil diperbarui!');
+    })->name('user.update');
+});
 
 // ================== Halaman Utama ==================
 Route::get('/', [RegnaController::class, 'dashboard'])->name('dashboard');
-
 
 // ================== Halaman Regna ==================
 Route::prefix('jenis')->group(function () {
@@ -49,7 +91,7 @@ Route::get('/warga', [WargaController::class, 'index'])->name('warga.index');
 Route::get('/warga/create', [WargaController::class, 'create'])->name('warga.create');
 // Simpan data
 Route::post('/warga', [WargaController::class, 'store'])->name('warga.store');
-// Form edi
+// Form edit
 Route::get('/warga/{id}/edit', [WargaController::class, 'edit'])->name('warga.edit');
 // Update data
 Route::put('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');

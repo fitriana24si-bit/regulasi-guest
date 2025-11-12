@@ -60,30 +60,5 @@
   </div>
 </section>
 
-<style>
-  section#edit-jenis {
-    animation: fadeInUp 0.6s ease-out;
-  }
 
-  .form-control {
-    border: 1px solid #e0e0e0;
-    padding: 12px 16px;
-    transition: all 0.3s ease;
-  }
-
-  .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
-  }
-
-  .btn {
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-
-  .btn:hover {
-    transform: translateY(-2px);
-  }
-</style>
 @endsection

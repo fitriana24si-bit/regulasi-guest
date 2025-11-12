@@ -1,13 +1,13 @@
 @extends('layouts.guest.main')
 
 @section('title', 'Kategori Dokumen | Regna')
-
+@include('layouts.guest.css')
 @section('content')
-<div class="container py-5" data-aos="fade-up">
+<div class="container py-5 mt-5" data-aos="fade-up" style="margin-top: 120px !important;">
   <div class="text-center mb-5">
-    <h2 class="fw-bold text-success">📂 Kategori Dokumen</h2>
-    <p class="text-muted">Klasifikasi dokumen berdasarkan kategori tertentu.</p>
-    <hr class="w-25 mx-auto border-success border-2">
+    <h2 class="fw-bold text-white">📂 Kategori Dokumen</h2>
+    <p class="text-light">Klasifikasi dokumen berdasarkan kategori tertentu.</p>
+    <hr class="w-25 mx-auto border-light border-2">
   </div>
 
   <div class="row justify-content-center g-4">
@@ -48,14 +48,4 @@
     </div>
   </div>
 </div>
-
-<style>
-  .hover-zoom {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .hover-zoom:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
-</style>
 @endsection
