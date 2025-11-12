@@ -6,10 +6,7 @@
 <div class="container py-5">
     <h3 class="mb-4 text-success fw-bold">Edit Data Warga</h3>
 <form action="{{ route('warga.update', ['id' => $warga->warga_id]) }}" method="POST">
-    @csrf
-    @method('PUT')
-
-
+   
         @csrf
         @method('PUT')
 
