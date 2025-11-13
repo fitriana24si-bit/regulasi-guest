@@ -9,7 +9,7 @@
     }
 
     #data-warga {
-        background: linear-gradient(180deg, #cc8624 0%, #a17f19 100%);
+        background: linear-gradient(180deg, #cc8624 0%, #fad492 100%);
         min-height: 100vh;
         padding: 100px 0 60px;
         color: #333;
