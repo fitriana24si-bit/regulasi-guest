@@ -1,14 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RegnaController;
+use App\Http\Controllers\WargaController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
-
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\RegnaController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\WargaController;
+use Illuminate\Support\Facades\Route;
+use App\Models\User; // Tambahkan ini untuk ambil data semua user
 
 // ================== Halaman About ==================
 Route::get('/about', function () {
@@ -16,26 +15,28 @@ Route::get('/about', function () {
 })->name('about');
 
 // ================== Halaman User ==================
-// Menampilkan data user yang sedang login dalam card
 Route::middleware('auth')->group(function () {
+
+    // 🔹 Tampilkan profil user login + daftar semua user
     Route::get('/user', function () {
-        $user = Auth::user();
-        return view('pages.user', compact('user'));
+        $user = Auth::user();      // user yang sedang login
+        $users = User::all();      // semua user terdaftar
+        return view('pages.user', compact('user', 'users'));
     })->name('user');
 
-    // Edit profil user yang sedang login
+    // 🔹 Edit profil user login
     Route::get('/user/edit', function () {
         $user = Auth::user();
         return view('pages.user.edit', compact('user'));
     })->name('user.edit');
 
-    // Update profil user
+    // 🔹 Update profil user login
     Route::post('/user/update', function (Request $request) {
         $user = Auth::user();
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email',
             'password' => 'nullable|confirmed|min:6',
         ]);
 
@@ -84,17 +85,32 @@ Route::get('/dokumen', [RegnaController::class, 'dokumen'])->name('dokumen.index
 Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 Route::get('/lampiran', [RegnaController::class, 'lampiran'])->name('lampiran.index');
 
-// ================== Resource Controller ==================
-// Tampilkan semua data
+// ================== Resource Controller (Warga) ==================
 Route::get('/warga', [WargaController::class, 'index'])->name('warga.index');
-// Form tambah
 Route::get('/warga/create', [WargaController::class, 'create'])->name('warga.create');
-// Simpan data
 Route::post('/warga', [WargaController::class, 'store'])->name('warga.store');
-// Form edit
 Route::get('/warga/{id}/edit', [WargaController::class, 'edit'])->name('warga.edit');
-// Update data
 Route::put('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');
 Route::patch('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');
-// Hapus
 Route::delete('/warga/{id}', [WargaController::class, 'destroy'])->name('warga.destroy');
+
+// ================== User CRUD via AuthController ==================
+Route::get('/users', [AuthController::class, 'showAllUsers'])->name('users.index');
+Route::get('/users/create', [AuthController::class, 'showRegister'])->name('users.create');
+Route::post('/users', [AuthController::class, 'register'])->name('users.store');
+
+// ================== Edit & Hapus User Lain ==================
+Route::middleware('auth')->group(function () {
+    // Edit user lain
+    Route::get('/users/{id}/edit', [AuthController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [AuthController::class, 'updateUser'])->name('users.update');
+
+    // Hapus user lain
+    Route::delete('/users/{id}', [AuthController::class, 'destroyUser'])->name('users.destroy');
+});
+
+// Edit profil user login
+Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
+
+// Update profil user login
+Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');

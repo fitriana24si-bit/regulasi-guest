@@ -4,20 +4,20 @@
 @section('title', 'Tambah Jenis Dokumen | Regna')
 
 @section('content')
-<section id="tambah-jenis" class="py-7" style="background: linear-gradient(to bottom right, #105fae, #e6f0ff); min-height: 100vh;">
+<section id="tambah-jenis" class="py-7" style="background: linear-gradient(to bottom right, #d99c46, #e6f0ff); min-height: 100vh;">
   <div class="container" data-aos="fade-up">
 
     <!-- Header Halaman -->
     <div class="text-center mb-5">
-      <h2 class="fw-bold mb-2" style="color:#0056d2;">📝 Tambah Jenis Dokumen</h2>
+      <h2 class="fw-bold mb-2" style="color:#ffffff;">📝 Tambah Jenis Dokumen</h2>
       <p class="text-secondary fs-5">Tambahkan jenis dokumen baru ke dalam sistem.</p>
-      <div class="mx-auto" style="width:100px; height:4px; background:linear-gradient(90deg, #007bff, #00c6ff); border-radius:2px;"></div>
+      <div class="mx-auto" style="width:100px; height:4px; background:linear-gradient(90deg, #ebae51, #ebae51); border-radius:2px;"></div>
     </div>
 
     <!-- Kartu Form -->
     <div class="card border-0 shadow-lg rounded-5 overflow-hidden mx-auto" style="background:white; max-width: 600px;">
       <div class="card-header text-white fw-semibold px-4 py-3 text-center"
-           style="background: linear-gradient(90deg, #007bff, #00c6ff);">
+           style="background: linear-gradient(90deg, #ff8400, #ffffff);">
         <i class="bi bi-plus-circle me-2"></i>Form Tambah Jenis Dokumen
       </div>
 

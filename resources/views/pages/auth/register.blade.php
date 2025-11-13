@@ -4,7 +4,7 @@
 
 @section('content')
 <section id="register" class="min-vh-100 d-flex align-items-center justify-content-center py-5"
-         style="background: linear-gradient(135deg, #f8fbff 0%, #e9f0ff 100%);">
+         style="background: linear-gradient(135deg, #ffbf5e 0%, #e9f0ff 100%);">
     <div class="container" data-aos="fade-up">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
@@ -27,7 +27,8 @@
                         @endif
 
                         {{-- Form --}}
-                        <form action="{{ route('register.post') }}" method="POST" novalidate>
+                        <form action="{{ route('users.store') }}" method="POST" novalidate>
+
                             @csrf
 
                             <div class="mb-3">
@@ -82,6 +83,6 @@
         </div>
     </div>
 
-   
+
 </section>
 @endsection

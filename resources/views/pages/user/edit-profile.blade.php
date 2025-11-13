@@ -1,6 +1,6 @@
 @extends('layouts.guest.main')
 
-@section('title', 'Edit Data User')
+@section('title', 'Edit Profil Saya')
 
 @section('content')
 <section class="section py-5" style="background: linear-gradient(135deg, #e8f5e9, #eec186, #dfcd84); min-height: 100vh;">
@@ -8,9 +8,15 @@
         <div class="card shadow-lg border-0 rounded-4"
              style="max-width: 500px; width: 100%; background: #ffffffd8; backdrop-filter: blur(8px);">
             <div class="card-body p-5">
-                <h4 class="fw-bold text-center text-dark mb-4">✏️ Edit User Lain</h4>
+                <h4 class="fw-bold text-center text-dark mb-4">🧑‍💻 Edit Profil Saya</h4>
 
-                <form action="{{ route('users.update', $user->id) }}" method="POST">
+                @if (session('success'))
+                    <div class="alert alert-success rounded-pill text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('profile.update') }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -37,11 +43,11 @@
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('users.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <a href="{{ route('user') }}" class="btn btn-outline-secondary rounded-pill px-4">
                             ← Kembali
                         </a>
                         <button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold shadow-sm">
-                            💾 Simpan Perubahan
+                            💾 Simpan
                         </button>
                     </div>
                 </form>
