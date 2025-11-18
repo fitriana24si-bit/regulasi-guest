@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegnaController;
 use App\Http\Controllers\WargaController;
+use App\Http\Controllers\Kategori;
+use App\Http\Controllers\Dokumen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -114,3 +116,10 @@ Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profi
 
 // Update profil user login
 Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+// Route untuk Kategori
+Route::resource('kategori', Kategori::class);
+
+// Route untuk Dokumen
+Route::resource('dokumen', Dokumen::class);
+

@@ -45,6 +45,14 @@
                     </a>
                 </li>
 
+
+                <li>
+                    <a href="{{ route('dokumen.index') }}" class="{{ request()->routeIs('dokumen.*') ? 'active' : '' }}">
+                        Dokumen
+                    </a>
+                </li>
+
+
                 <li>
                     <a href="{{ route('lampiran.index') }}" class="{{ request()->routeIs('lampiran.*') ? 'active' : '' }}">
                         Lampiran
