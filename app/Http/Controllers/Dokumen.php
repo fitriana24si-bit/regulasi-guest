@@ -55,11 +55,11 @@ class Dokumen extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
-    {
-        $dokumen = DokumenHukum::with(['jenis', 'kategori'])->findOrFail($id);
-        return view('pages.dokumen.show', compact('dokumen'));
-    }
+   public function show($id)
+{
+    $dokumen = DokumenHukum::with(['jenis', 'kategori'])->findOrFail($id);
+    return view('pages.dokumen.show', compact('dokumen'));
+}
 
     /**
      * Show the form for editing the specified resource.
