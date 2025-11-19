@@ -5,14 +5,16 @@ namespace Database\Seeders;
 use App\Models\JenisDokumen;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class JenisDokumenSeeder extends Seeder
 {
     public function run()
     {
-        // HAPUS INI: DB::table('jenis_dokumen')->delete();
+        $faker = Faker::create('id_ID');
 
-        // GUNAKAN INI: Update data yang sudah ada
+        DB::table('jenis_dokumen')->delete();
+
         $jenis = [
             [
                 'nama_jenis' => 'Perdes',
@@ -25,16 +27,21 @@ class JenisDokumenSeeder extends Seeder
             [
                 'nama_jenis' => 'SE',
                 'deskripsi' => 'Surat Edaran'
+            ],
+            [
+                'nama_jenis' => 'SK',
+                'deskripsi' => 'Surat Keputusan'
+            ],
+            [
+                'nama_jenis' => 'Nota',
+                'deskripsi' => 'Nota Dinas'
             ]
         ];
 
         foreach ($jenis as $data) {
-            JenisDokumen::updateOrCreate(
-                ['nama_jenis' => $data['nama_jenis']],
-                $data
-            );
+            JenisDokumen::create($data);
         }
 
-        $this->command->info('✅ Jenis Dokumen berhasil di-seed!');
+        $this->command->info('✅ Jenis Dokumen berhasil di-seed! (5 data)');
     }
 }

@@ -5,14 +5,16 @@ namespace Database\Seeders;
 use App\Models\KategoriDokumen;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class KategoriDokumenSeeder extends Seeder
 {
     public function run()
     {
-        // HAPUS INI: DB::table('kategori_dokumens')->delete();
+        $faker = Faker::create('id_ID');
 
-        // GUNAKAN INI: Update data yang sudah ada
+        DB::table('kategori_dokumen')->delete();
+
         $kategoris = [
             [
                 'nama' => 'Peraturan Desa',
@@ -29,16 +31,21 @@ class KategoriDokumenSeeder extends Seeder
             [
                 'nama' => 'Anggaran',
                 'deskripsi' => 'Dokumen anggaran pendapatan dan belanja desa'
+            ],
+            [
+                'nama' => 'Administrasi',
+                'deskripsi' => 'Dokumen administrasi pemerintahan desa'
+            ],
+            [
+                'nama' => 'Kependudukan',
+                'deskripsi' => 'Dokumen terkait kependudukan'
             ]
         ];
 
         foreach ($kategoris as $kategori) {
-            KategoriDokumen::updateOrCreate(
-                ['nama' => $kategori['nama']],
-                $kategori
-            );
+            KategoriDokumen::create($kategori);
         }
 
-        $this->command->info('✅ Kategori Dokumen berhasil di-seed!');
+        $this->command->info('✅ Kategori Dokumen berhasil di-seed! (6 data)');
     }
 }
