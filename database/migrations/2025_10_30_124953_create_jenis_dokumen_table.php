@@ -12,7 +12,7 @@ return new class extends Migration
    public function up()
 {
     Schema::create('jenis_dokumen', function (Blueprint $table) {
-        $table->id('id_jenis');
+        $table->id('id_jenis'); // ← PASTIKAN INI
         $table->string('nama_jenis');
         $table->text('deskripsi')->nullable();
         $table->timestamps();

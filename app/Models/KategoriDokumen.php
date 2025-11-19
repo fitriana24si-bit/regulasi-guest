@@ -9,7 +9,7 @@ class KategoriDokumen extends Model
 {
     use HasFactory;
 
-    protected $table = 'kategori_dokumen';
+    protected $table = 'kategori_dokumen'; // ← UBAH JADI TANPA 's'
     protected $primaryKey = 'kategori_id';
 
     protected $fillable = [
@@ -17,9 +17,7 @@ class KategoriDokumen extends Model
         'deskripsi'
     ];
 
-    public $timestamps = true;
-
-    // Relasi ke dokumen_hukum
+    // Relasi ke dokumen hukum
     public function dokumenHukum()
     {
         return $this->hasMany(DokumenHukum::class, 'kategori_id', 'kategori_id');

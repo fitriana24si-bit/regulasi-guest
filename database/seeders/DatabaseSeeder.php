@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             JenisDokumenSeeder::class,
             KategoriDokumenSeeder::class,
+            DokumenHukumSeeder::class,
         ]);
     }
 }
