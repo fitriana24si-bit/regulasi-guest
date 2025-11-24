@@ -4,13 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\Warga;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class WargaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $warga = Warga::all();
-        return view('pages.warga.index', compact('warga'));
+        // Filterable columns
+        $filterableColumns = ['jenis_kelamin', 'agama', 'pekerjaan'];
+
+        // Searchable columns
+        $searchableColumns = ['nama', 'no_ktp', 'email', 'telp'];
+
+        // Query dengan search, filter, dan pagination
+        $warga = Warga::when($request->filled('search'), function($query) use ($request, $searchableColumns) {
+                $query->where(function($q) use ($request, $searchableColumns) {
+                    foreach ($searchableColumns as $column) {
+                        $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                    }
+                });
+            })
+            ->when($request->filled('jenis_kelamin'), function($query) use ($request) {
+                $query->where('jenis_kelamin', $request->jenis_kelamin);
+            })
+            ->when($request->filled('agama'), function($query) use ($request) {
+                $query->where('agama', $request->agama);
+            })
+            ->when($request->filled('pekerjaan'), function($query) use ($request) {
+                $query->where('pekerjaan', $request->pekerjaan);
+            })
+            ->latest()
+            ->paginate(12) // ✅ UBAH: dari 15 jadi 12 (sesuai grid layout 4 kolom)
+            ->withQueryString()
+            ->onEachSide(2);
+
+        // Data untuk dropdown filter
+        $jenisKelaminList = Warga::distinct()->pluck('jenis_kelamin')->filter();
+        $agamaList = Warga::distinct()->pluck('agama')->filter();
+        $pekerjaanList = Warga::distinct()->pluck('pekerjaan')->filter();
+
+        return view('pages.warga.index', compact('warga', 'jenisKelaminList', 'agamaList', 'pekerjaanList'));
     }
 
     public function create()

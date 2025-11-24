@@ -4,15 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\KategoriDokumen;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class Kategori extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kategoris = KategoriDokumen::all();
+        // Searchable columns
+        $searchableColumns = ['nama', 'deskripsi'];
+
+        // Query dengan search dan pagination
+        $kategoris = KategoriDokumen::withCount('dokumenHukum')
+            ->when($request->filled('search'), function($query) use ($request, $searchableColumns) {
+                $query->where(function($q) use ($request, $searchableColumns) {
+                    foreach ($searchableColumns as $column) {
+                        $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                    }
+                });
+            })
+            ->latest()
+            ->paginate(9)
+            ->withQueryString()
+            ->onEachSide(2);
+
         return view('pages.kategori.index', compact('kategoris'));
     }
 

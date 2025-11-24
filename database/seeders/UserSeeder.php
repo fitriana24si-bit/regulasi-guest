@@ -13,30 +13,48 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Data admin tetap
-        User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@desa.id',
-            'password' => Hash::make('password123'),
-        ]);
-
-        User::create([
-            'name' => 'Operator Desa',
-            'email' => 'operator@desa.id',
-            'password' => Hash::make('password123'),
-        ]);
-
-        // Tambahkan user dummy (5 user)
-        foreach (range(1, 5) as $index) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
+        // Gunakan firstOrCreate untuk admin dan operator
+        User::firstOrCreate(
+            ['email' => 'admin@desa.id'],
+            [
+                'name' => 'Administrator',
                 'password' => Hash::make('password123'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'operator@desa.id'],
+            [
+                'name' => 'Operator Desa',
+                'password' => Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Tambahkan 100 user dummy
+        $this->command->info('🔄 Membuat 100 user dummy...');
+
+        $progressBar = $this->command->getOutput()->createProgressBar(100);
+        $progressBar->start();
+
+        for ($i = 1; $i <= 100; $i++) {
+            User::firstOrCreate(
+                ['email' => $faker->unique()->safeEmail],
+                [
+                    'name' => $faker->name,
+                    'password' => Hash::make('password123'),
+                    'email_verified_at' => now(),
+                    'created_at' => now()->subDays(rand(1, 365)), // random date dalam 1 tahun terakhir
+                    'updated_at' => now(),
+                ]
+            );
+
+            $progressBar->advance();
         }
 
-        $this->command->info('✅ User berhasil di-seed! (7 data: 2 admin + 5 dummy)');
+        $progressBar->finish();
+        $this->command->newLine(2); // Tambahkan 2 baris baru setelah progress bar
+        $this->command->info('✅ 102 User berhasil di-seed! (2 user utama + 100 user dummy)');
     }
 }

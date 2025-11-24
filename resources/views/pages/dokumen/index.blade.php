@@ -100,81 +100,101 @@
         <div class="card-header bg-transparent py-3">
             <h5 class="mb-0">
                 <i class="fas fa-filter me-2 text-primary"></i>
-                Filter & Pencarian Lanjutan
+                Filter & Pencarian
             </h5>
         </div>
         <div class="card-body">
-            <div class="row g-3">
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label small fw-bold text-muted">Jenis Dokumen</label>
-                    <select class="form-select form-select-sm" id="filterJenis">
-                        <option value="">Semua Jenis</option>
-                        @foreach($jenis as $item)
-                            <option value="{{ $item->id_jenis }}">{{ $item->nama_jenis }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label small fw-bold text-muted">Kategori</label>
-                    <select class="form-select form-select-sm" id="filterKategori">
-                        <option value="">Semua Kategori</option>
-                        @foreach($kategoris as $kategori)
-                            <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label small fw-bold text-muted">Status</label>
-                    <select class="form-select form-select-sm" id="filterStatus">
-                        <option value="">Semua Status</option>
-                        <option value="aktif">Aktif</option>
-                        <option value="tidak_aktif">Tidak Aktif</option>
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label small fw-bold text-muted">Pencarian</label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Cari dokumen...">
-                        <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                            <i class="fas fa-times"></i>
-                        </button>
+            <form method="GET" action="{{ route('dokumen.index') }}" id="filterForm">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label small fw-bold text-muted">Jenis Dokumen</label>
+                        <select name="id_jenis" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Semua Jenis</option>
+                            @foreach($jenis as $item)
+                                <option value="{{ $item->id_jenis }}"
+                                    {{ request('id_jenis') == $item->id_jenis ? 'selected' : '' }}>
+                                    {{ $item->nama_jenis }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label small fw-bold text-muted">Kategori</label>
+                        <select name="kategori_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Semua Kategori</option>
+                            @foreach($kategoris as $kategori)
+                                <option value="{{ $kategori->kategori_id }}"
+                                    {{ request('kategori_id') == $kategori->kategori_id ? 'selected' : '' }}>
+                                    {{ $kategori->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label small fw-bold text-muted">Status</label>
+                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Semua Status</option>
+                            <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label small fw-bold text-muted">Pencarian</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="search" class="form-control"
+                                   value="{{ request('search') }}"
+                                   placeholder="Cari judul/nomor/ringkasan...">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
+                                   class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <button class="btn btn-sm btn-outline-secondary" id="resetFilters">
-                        <i class="fas fa-redo me-1"></i>Reset Filter
-                    </button>
-                    <span class="text-muted small ms-2" id="filterResults"></span>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <a href="{{ route('dokumen.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-redo me-1"></i>Reset Filter
+                        </a>
+                        <span class="text-muted small ms-2">
+                            Menampilkan {{ $dokumens->total() }} dokumen
+                            @if(request('search') || request('id_jenis') || request('kategori_id') || request('status'))
+                                (difilter)
+                            @endif
+                        </span>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Enhanced Cards Section -->
     <div class="row" id="dokumenCards">
-        @foreach($dokumens as $dokumen)
-        <div class="col-xl-4 col-md-6 mb-4 dokumen-card"
-             data-jenis="{{ $dokumen->jenis->id_jenis }}"
-             data-kategori="{{ $dokumen->kategori->kategori_id }}"
-             data-status="{{ $dokumen->status }}"
-             data-judul="{{ strtolower($dokumen->judul) }}"
-             data-nomor="{{ strtolower($dokumen->nomor) }}">
-
+        @foreach($dokumens as $index => $dokumen)
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card document-card h-100 border-0 shadow-sm">
                 <!-- Status Badge -->
                 <div class="card-status {{ $dokumen->status == 'aktif' ? 'bg-success' : 'bg-danger' }}"></div>
 
                 <div class="card-body">
-                    <!-- Header dengan Nomor dan Status -->
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="document-number">
-                            <h6 class="text-primary fw-bold mb-0">{{ $dokumen->nomor }}</h6>
-                        </div>
+                    <!-- Nomor Urut dan Status -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">
+                            #{{ ($dokumens->currentPage() - 1) * $dokumens->perPage() + $loop->iteration }}
+                        </small>
                         <span class="badge {{ $dokumen->status == 'aktif' ? 'bg-success' : 'bg-danger' }}">
                             {{ ucfirst($dokumen->status) }}
                         </span>
+                    </div>
+
+                    <!-- Nomor Dokumen -->
+                    <div class="document-number">
+                        <h6 class="text-primary fw-bold mb-2">{{ $dokumen->nomor }}</h6>
                     </div>
 
                     <!-- Judul Dokumen -->
@@ -259,7 +279,7 @@
                     dari {{ $dokumens->total() }} dokumen
                 </div>
                 <nav>
-                    {{ $dokumens->links() }}
+                    {{ $dokumens->links('pagination::bootstrap-5') }}
                 </nav>
             </div>
         </div>
@@ -285,11 +305,11 @@
                 </div>
                 <div class="mb-3">
                     <h6><i class="fas fa-search text-primary me-2"></i>Pencarian</h6>
-                    <p class="small text-muted mb-2">Cari dokumen berdasarkan judul atau nomor dokumen.</p>
+                    <p class="small text-muted mb-2">Cari dokumen berdasarkan judul, nomor dokumen, atau ringkasan.</p>
                 </div>
-                <div>
-                    <h6><i class="fas fa-download text-primary me-2"></i>Export Data</h6>
-                    <p class="small text-muted mb-0">Gunakan tombol export untuk mengunduh data dalam format Excel.</p>
+                <div class="mb-3">
+                    <h6><i class="fas fa-sort-numeric-up text-primary me-2"></i>Pagination</h6>
+                    <p class="small text-muted mb-0">Gunakan tombol halaman untuk melihat lebih banyak dokumen.</p>
                 </div>
             </div>
         </div>
@@ -401,109 +421,36 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const filterJenis = document.getElementById('filterJenis');
-    const filterKategori = document.getElementById('filterKategori');
-    const filterStatus = document.getElementById('filterStatus');
-    const searchInput = document.getElementById('searchInput');
-    const clearSearch = document.getElementById('clearSearch');
-    const resetFilters = document.getElementById('resetFilters');
-    const filterResults = document.getElementById('filterResults');
-    const dokumenCards = document.querySelectorAll('.dokumen-card');
+    // Auto submit form ketika filter berubah
+    const filterSelects = document.querySelectorAll('select[name="id_jenis"], select[name="kategori_id"], select[name="status"]');
+    filterSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    });
 
-    function updateFilterResults(count) {
-        filterResults.textContent = `Menampilkan ${count} dokumen`;
-    }
-
-    function filterCards() {
-        const jenisValue = filterJenis.value;
-        const kategoriValue = filterKategori.value;
-        const statusValue = filterStatus.value;
-        const searchValue = searchInput.value.toLowerCase();
-
-        let visibleCount = 0;
-
-        dokumenCards.forEach(card => {
-            const cardJenis = card.getAttribute('data-jenis');
-            const cardKategori = card.getAttribute('data-kategori');
-            const cardStatus = card.getAttribute('data-status');
-            const cardJudul = card.getAttribute('data-judul');
-            const cardNomor = card.getAttribute('data-nomor');
-
-            const jenisMatch = !jenisValue || cardJenis === jenisValue;
-            const kategoriMatch = !kategoriValue || cardKategori === kategoriValue;
-            const statusMatch = !statusValue || cardStatus === statusValue;
-            const searchMatch = !searchValue ||
-                               cardJudul.includes(searchValue) ||
-                               cardNomor.includes(searchValue);
-
-            if (jenisMatch && kategoriMatch && statusMatch && searchMatch) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
+    // Animasi hover untuk card
+    const cards = document.querySelectorAll('.document-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+            this.style.transition = 'all 0.3s ease';
         });
 
-        updateFilterResults(visibleCount);
-
-        // Tampilkan pesan jika tidak ada hasil
-        const noResults = document.getElementById('noResults');
-        if (visibleCount === 0 && dokumenCards.length > 0) {
-            if (!noResults) {
-                const noResultsDiv = document.createElement('div');
-                noResultsDiv.id = 'noResults';
-                noResultsDiv.className = 'col-12';
-                noResultsDiv.innerHTML = `
-                    <div class="card shadow-lg border-0 text-center py-5">
-                        <div class="card-body">
-                            <i class="fas fa-search fa-3x text-gray-300 mb-3"></i>
-                            <h4 class="text-gray-500 mb-2">Tidak ada dokumen yang sesuai</h4>
-                            <p class="text-muted mb-3">Coba ubah filter atau kata kunci pencarian</p>
-                            <button class="btn btn-primary" onclick="resetAllFilters()">
-                                <i class="fas fa-redo me-1"></i>Reset Semua Filter
-                            </button>
-                        </div>
-                    </div>
-                `;
-                document.getElementById('dokumenCards').appendChild(noResultsDiv);
-            }
-        } else if (noResults) {
-            noResults.remove();
-        }
-    }
-
-    function resetAllFilters() {
-        filterJenis.value = '';
-        filterKategori.value = '';
-        filterStatus.value = '';
-        searchInput.value = '';
-        filterCards();
-    }
-
-    // Event Listeners
-    filterJenis.addEventListener('change', filterCards);
-    filterKategori.addEventListener('change', filterCards);
-    filterStatus.addEventListener('change', filterCards);
-    searchInput.addEventListener('input', filterCards);
-    clearSearch.addEventListener('click', function() {
-        searchInput.value = '';
-        filterCards();
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
-    resetFilters.addEventListener('click', resetAllFilters);
 
-    // Initialize
-    updateFilterResults(dokumenCards.length);
+    // Konfirmasi sebelum menghapus
+    const deleteForms = document.querySelectorAll('form[onsubmit]');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Yakin ingin menghapus dokumen ini?')) {
+                e.preventDefault();
+            }
+        });
+    });
 });
-
-// Global function untuk reset dari modal
-function resetAllFilters() {
-    document.getElementById('filterJenis').value = '';
-    document.getElementById('filterKategori').value = '';
-    document.getElementById('filterStatus').value = '';
-    document.getElementById('searchInput').value = '';
-
-    const event = new Event('change');
-    document.getElementById('filterJenis').dispatchEvent(event);
-}
 </script>
 @endsection

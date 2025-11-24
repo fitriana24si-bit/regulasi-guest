@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JenisDokumen;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Builder;
 
 class RegnaController extends Controller
 {
@@ -13,18 +14,45 @@ class RegnaController extends Controller
         return view('pages.dashboard');
     }
 
-    // Method untuk Jenis Dokumen
-    public function jenis()
+    // ===============================
+    // METHOD UNTUK JENIS DOKUMEN
+    // ===============================
+
+    /**
+     * Display a listing of the resource dengan pagination & search
+     */
+    public function jenis(Request $request)
     {
-        $jenisDokumen = JenisDokumen::all();
-        return view('pages.jenis', compact('jenisDokumen')); // Sesuaikan path
+        // Searchable columns
+        $searchableColumns = ['nama_jenis', 'deskripsi'];
+
+        // Query dengan search dan pagination
+        $jenisDokumen = JenisDokumen::when($request->filled('search'), function($query) use ($request, $searchableColumns) {
+                $query->where(function($q) use ($request, $searchableColumns) {
+                    foreach ($searchableColumns as $column) {
+                        $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                    }
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString()
+            ->onEachSide(2);
+
+        return view('pages.jenis.index', compact('jenisDokumen'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function jenisCreate()
     {
-        return view('pages.jenis.create'); // Sesuaikan path
+        return view('pages.jenis.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function jenisStore(Request $request)
     {
         $request->validate([
@@ -38,12 +66,18 @@ class RegnaController extends Controller
             ->with('success', 'Jenis dokumen berhasil ditambahkan');
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function jenisEdit($id)
     {
         $jenis = JenisDokumen::findOrFail($id);
-        return view('pages.jenis.edit', compact('jenis')); // Sesuaikan path
+        return view('pages.jenis.edit', compact('jenis'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function jenisUpdate(Request $request, $id)
     {
         $jenis = JenisDokumen::findOrFail($id);
@@ -64,6 +98,9 @@ class RegnaController extends Controller
             ->with('success', 'Jenis dokumen berhasil diperbarui');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function jenisDestroy($id)
     {
         $jenis = JenisDokumen::findOrFail($id);
@@ -73,23 +110,27 @@ class RegnaController extends Controller
             ->with('success', 'Jenis dokumen berhasil dihapus');
     }
 
+    // ===============================
+    // METHOD UNTUK MODUL LAINNYA
+    // ===============================
+
     public function kategori()
     {
-        return view('pages.kategori'); // Sesuaikan path
+        return view('pages.kategori');
     }
 
     public function dokumen()
     {
-        return view('pages.dokumen'); // Sesuaikan path
+        return view('pages.dokumen');
     }
 
     public function riwayat()
     {
-        return view('pages.riwayat'); // Sesuaikan path
+        return view('pages.riwayat');
     }
 
     public function lampiran()
     {
-        return view('pages.lampiran'); // Sesuaikan path
+        return view('pages.lampiran');
     }
 }

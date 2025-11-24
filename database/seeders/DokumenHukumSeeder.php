@@ -101,7 +101,7 @@ class DokumenHukumSeeder extends Seeder
         ];
 
         // Tambahkan data dummy dengan Faker (20 data) - versi Indonesia
-        foreach (range(1, 20) as $index) {
+        foreach (range(1, 100) as $index) {
             $jenis = $faker->randomElement([$jenisPerdes, $jenisPerkades, $jenisSE]);
             $kategori = $faker->randomElement([$kategoriPeraturan, $kategoriSuratEdaran, $kategoriLaporan, $kategoriAnggaran]);
 
@@ -131,6 +131,6 @@ class DokumenHukumSeeder extends Seeder
             DokumenHukum::create($dokumenData);
         }
 
-        $this->command->info('✅ Dokumen Hukum berhasil di-seed! (23 data: 3 dasar + 20 dummy) - Data Indonesia');
+        $this->command->info('✅ Dokumen Hukum berhasil di-seed! Data Indonesia');
     }
 }

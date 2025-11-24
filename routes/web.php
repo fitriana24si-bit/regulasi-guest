@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegnaController;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\Kategori;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Models\User; // Tambahkan ini untuk ambil data semua user
+use App\Models\User;
 
 // ================== Halaman About ==================
 Route::get('/about', function () {
@@ -96,20 +97,8 @@ Route::put('/warga/{id}', [WargaController::class, 'update'])->name('warga.updat
 Route::patch('/warga/{id}', [WargaController::class, 'update'])->name('warga.update');
 Route::delete('/warga/{id}', [WargaController::class, 'destroy'])->name('warga.destroy');
 
-// ================== User CRUD via AuthController ==================
-Route::get('/users', [AuthController::class, 'showAllUsers'])->name('users.index');
-Route::get('/users/create', [AuthController::class, 'showRegister'])->name('users.create');
-Route::post('/users', [AuthController::class, 'register'])->name('users.store');
-
-// ================== Edit & Hapus User Lain ==================
-Route::middleware('auth')->group(function () {
-    // Edit user lain
-    Route::get('/users/{id}/edit', [AuthController::class, 'editUser'])->name('users.edit');
-    Route::put('/users/{id}', [AuthController::class, 'updateUser'])->name('users.update');
-
-    // Hapus user lain
-    Route::delete('/users/{id}', [AuthController::class, 'destroyUser'])->name('users.destroy');
-});
+// ================== User Management dengan Pagination & Filter ==================
+Route::resource('users', UserController::class)->except(['show']);
 
 // Edit profil user login
 Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');

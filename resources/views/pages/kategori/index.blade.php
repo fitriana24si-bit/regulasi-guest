@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->count() }}</div>
+                            <div class="stat-value">{{ $kategoris->total() }}</div>
                             <div class="stat-label">Total Kategori</div>
                         </div>
                         <div class="stat-icon">
@@ -48,7 +48,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->sum('dokumen_count') ?? 0 }}</div>
+                            <div class="stat-value">{{ $kategoris->sum('dokumen_hukum_count') }}</div>
                             <div class="stat-label">Total Dokumen</div>
                         </div>
                         <div class="stat-icon">
@@ -63,11 +63,11 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->where('status', 'aktif')->count() }}</div>
-                            <div class="stat-label">Kategori Aktif</div>
+                            <div class="stat-value">{{ $kategoris->count() }}</div>
+                            <div class="stat-label">Ditampilkan</div>
                         </div>
                         <div class="stat-icon">
-                            <i class="fas fa-check-circle fa-2x"></i>
+                            <i class="fas fa-eye fa-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                                 })->count();
                             @endphp
                             <div class="stat-value">{{ $kategoriTerbaru }}</div>
-                            <div class="stat-label">Ditambah Bulan Ini</div>
+                            <div class="stat-label">Bulan Ini</div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-calendar-plus fa-2x"></i>
@@ -98,9 +98,52 @@
         </div>
     </div>
 
+    <!-- Search Section -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-transparent py-3">
+            <h5 class="mb-0">
+                <i class="fas fa-search me-2 text-primary"></i>
+                Pencarian Kategori
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('kategori.index') }}" id="searchForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-8">
+                        <label class="form-label small fw-bold text-muted">Cari Kategori</label>
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control"
+                                   value="{{ request('search') }}"
+                                   placeholder="Cari berdasarkan nama atau deskripsi kategori...">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i> Cari
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i> Clear
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="d-flex justify-content-end">
+                            <span class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ $kategoris->total() }} kategori ditemukan
+                                @if(request('search'))
+                                    (hasil pencarian)
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Kategori Cards Grid -->
     <div class="row" id="kategoriCards">
-        @foreach($kategoris as $kategori)
+        @forelse($kategoris as $index => $kategori)
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card kategori-card h-100 border-0 shadow-sm">
                 <!-- Category Header with Gradient -->
@@ -112,7 +155,7 @@
                                 <i class="fas fa-folder-open"></i>
                             </div>
                             <span class="badge bg-white text-dark category-badge">
-                                {{ $kategori->dokumen_count ?? 0 }} Dokumen
+                                {{ $kategori->dokumen_hukum_count }} Dokumen
                             </span>
                         </div>
                         <h5 class="category-title mt-3 mb-1">{{ $kategori->nama }}</h5>
@@ -127,7 +170,11 @@
                     <!-- Description -->
                     <div class="category-description mb-3">
                         <p class="text-muted mb-2">
-                            {{ $kategori->deskripsi ? Str::limit($kategori->deskripsi, 120) : 'Tidak ada deskripsi' }}
+                            @if($kategori->deskripsi)
+                                {{ Str::limit($kategori->deskripsi, 120) }}
+                            @else
+                                <span class="fst-italic">Tidak ada deskripsi</span>
+                            @endif
                         </p>
                     </div>
 
@@ -203,7 +250,7 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <small class="text-muted">Jumlah Dokumen</small>
-                                        <p class="mb-0 fw-bold">{{ $kategori->dokumen_count ?? 0 }} Dokumen</p>
+                                        <p class="mb-0 fw-bold">{{ $kategori->dokumen_hukum_count }} Dokumen</p>
                                     </div>
                                     <div class="col-6">
                                         <small class="text-muted">Terakhir Diupdate</small>
@@ -222,38 +269,44 @@
                 </div>
             </div>
         </div>
-        @endforeach
-
-        @if($kategoris->isEmpty())
+        @empty
         <div class="col-12">
             <div class="card shadow-lg border-0 text-center py-5">
                 <div class="card-body">
                     <i class="fas fa-folder-open fa-4x text-gray-300 mb-4"></i>
                     <h4 class="text-gray-500 mb-3">Belum ada kategori</h4>
-                    <p class="text-muted mb-4">Mulai dengan menambahkan kategori pertama Anda</p>
+                    <p class="text-muted mb-4">
+                        @if(request('search'))
+                            Tidak ditemukan kategori dengan kata kunci "{{ request('search') }}"
+                        @else
+                            Mulai dengan menambahkan kategori pertama Anda
+                        @endif
+                    </p>
                     <a href="{{ route('kategori.create') }}" class="btn btn-primary btn-lg">
                         <i class="fas fa-plus-circle me-2"></i>Tambah Kategori Pertama
                     </a>
                 </div>
             </div>
         </div>
-        @endif
+        @endforelse
     </div>
 
-    <!-- Simple Pagination Info -->
-    <div class="row mt-4">
+    <!-- Pagination -->
+    @if($kategoris->hasPages())
+    <div class="row mt-5">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-muted small">
-                    Menampilkan {{ $kategoris->count() }} dari {{ $kategoris->count() }} kategori
+                    Menampilkan {{ $kategoris->firstItem() ?? 0 }} - {{ $kategoris->lastItem() ?? 0 }}
+                    dari {{ $kategoris->total() }} kategori
                 </div>
-                <div class="text-muted small">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Semua kategori ditampilkan
-                </div>
+                <nav>
+                    {{ $kategoris->links('pagination::bootstrap-5') }}
+                </nav>
             </div>
         </div>
     </div>
+    @endif
 </div>
 
 <style>
@@ -385,6 +438,19 @@
     flex: 1;
 }
 
+/* Enhanced Pagination */
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: none;
+    color: #6c757d;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .category-actions {
@@ -403,15 +469,39 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Auto search dengan delay
+    let searchTimeout;
+    const searchInput = document.querySelector('input[name="search"]');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                document.getElementById('searchForm').submit();
+            }, 500);
+        });
+    }
+
     // Add hover effects
     const cards = document.querySelectorAll('.kategori-card');
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-8px)';
+            this.style.transition = 'all 0.3s ease';
         });
 
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Konfirmasi sebelum menghapus
+    const deleteForms = document.querySelectorAll('form[onsubmit]');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Yakin ingin menghapus kategori ini?')) {
+                e.preventDefault();
+            }
         });
     });
 });

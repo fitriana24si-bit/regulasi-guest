@@ -80,6 +80,58 @@
     .btn-success:hover {
         background-color: #b02222;
     }
+
+    /* NEW STYLES FOR SEARCH & FILTER */
+    .search-filter-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .search-filter-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .btn-search {
+        background: #dd2c2c;
+        border: none;
+        border-radius: 10px;
+        color: white;
+    }
+
+    .btn-search:hover {
+        background: #b02222;
+    }
+
+    .btn-reset {
+        background: #6c757d;
+        border: none;
+        border-radius: 10px;
+        color: white;
+    }
+
+    .pagination-info {
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 2px;
+        border: none;
+        color: #6c757d;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
 </style>
 
 <section id="data-warga" data-aos="fade-up">
@@ -91,8 +143,101 @@
             <p>Daftar data warga yang terdaftar dalam sistem regulasi desa</p>
         </div>
 
+        {{-- NEW: Search & Filter Section --}}
+        <div class="card search-filter-card mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('warga.index') }}" id="searchForm">
+                    <div class="row g-3 align-items-end">
+                        {{-- Search Input --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-muted">Pencarian</label>
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control"
+                                       value="{{ request('search') }}"
+                                       placeholder="Cari nama, KTP, email...">
+                                <button type="submit" class="btn btn-search">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                @if(request('search'))
+                                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
+                                       class="btn btn-reset">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Jenis Kelamin Filter --}}
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-muted">Jenis Kelamin</label>
+                            <select name="jenis_kelamin" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua</option>
+                                @foreach($jenisKelaminList as $jk)
+                                    <option value="{{ $jk }}" {{ request('jenis_kelamin') == $jk ? 'selected' : '' }}>
+                                        {{ $jk }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Agama Filter --}}
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-muted">Agama</label>
+                            <select name="agama" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua</option>
+                                @foreach($agamaList as $agama)
+                                    <option value="{{ $agama }}" {{ request('agama') == $agama ? 'selected' : '' }}>
+                                        {{ $agama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Pekerjaan Filter --}}
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-muted">Pekerjaan</label>
+                            <select name="pekerjaan" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua</option>
+                                @foreach($pekerjaanList as $pekerjaan)
+                                    <option value="{{ $pekerjaan }}" {{ request('pekerjaan') == $pekerjaan ? 'selected' : '' }}>
+                                        {{ $pekerjaan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Reset Filter --}}
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-muted">&nbsp;</label>
+                            <div>
+                                <a href="{{ route('warga.index') }}" class="btn btn-reset w-100">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Filter Info --}}
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <span class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                {{ $warga->total() }} warga ditemukan
+                                @if(request('search') || request('jenis_kelamin') || request('agama') || request('pekerjaan'))
+                                    (difilter)
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         {{-- Tombol Tambah --}}
-        <div class="d-flex justify-content-end mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="pagination-info">
+                Menampilkan {{ $warga->firstItem() ?? 0 }} - {{ $warga->lastItem() ?? 0 }} dari {{ $warga->total() }} warga
+            </div>
             <a href="{{ route('warga.create') }}" class="btn btn-success px-4 shadow-sm">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Warga
             </a>
@@ -104,6 +249,11 @@
                 <div class="col-md-4 col-lg-3">
                     <div class="card-warga">
                         <div class="card-body text-center">
+                            {{-- NEW: Nomor Urut --}}
+                            <div class="position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-dark">#{{ ($warga->currentPage() - 1) * $warga->perPage() + $loop->iteration }}</span>
+                            </div>
+
                             <div class="mb-3">
                                 <i class="bi bi-person-circle text-warning" style="font-size: 3rem;"></i>
                             </div>
@@ -134,10 +284,34 @@
                 </div>
             @empty
                 <div class="col-12 text-center text-white">
-                    <i class="bi bi-info-circle"></i> Belum ada data warga
+                    <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Belum ada data warga</h4>
+                    <p class="mb-4">
+                        @if(request('search') || request('jenis_kelamin') || request('agama') || request('pekerjaan'))
+                            Tidak ditemukan warga dengan filter yang dipilih
+                        @else
+                            Mulai dengan menambahkan data warga pertama
+                        @endif
+                    </p>
+                    <a href="{{ route('warga.create') }}" class="btn btn-success btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Tambah Warga Pertama
+                    </a>
                 </div>
             @endforelse
         </div>
+
+        {{-- NEW: Pagination --}}
+        @if($warga->hasPages())
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <nav>
+                        {{ $warga->links('pagination::bootstrap-5') }}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </section>
 
@@ -176,5 +350,20 @@
             timer: 2000
         });
     @endif
+
+    // NEW: Auto search dengan delay
+    document.addEventListener('DOMContentLoaded', function() {
+        let searchTimeout;
+        const searchInput = document.querySelector('input[name="search"]');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 500);
+            });
+        }
+    });
 </script>
 @endsection

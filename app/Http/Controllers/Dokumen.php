@@ -6,15 +6,36 @@ use App\Models\DokumenHukum;
 use App\Models\JenisDokumen;
 use App\Models\KategoriDokumen;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class Dokumen extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $dokumens = DokumenHukum::with(['jenis', 'kategori'])->paginate(9); // 9 item per halaman
+        // Filterable columns
+        $filterableColumns = ['id_jenis', 'kategori_id', 'status'];
+
+        // Searchable columns
+        $searchableColumns = ['nomor', 'judul', 'ringkasan'];
+
+        // Query dengan filter, search, dan pagination
+        $dokumens = DokumenHukum::with(['jenis', 'kategori'])
+            ->when($request->filled('search'), function($query) use ($request, $searchableColumns) {
+                $query->where(function($q) use ($request, $searchableColumns) {
+                    foreach ($searchableColumns as $column) {
+                        $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                    }
+                });
+            })
+            ->filter($request, $filterableColumns)
+            ->latest()
+            ->paginate(9)
+            ->withQueryString()
+            ->onEachSide(2); // TIPS 1: hanya tampilkan 2 halaman sebelum & sesudah
+
         $jenis = JenisDokumen::all();
         $kategoris = KategoriDokumen::all();
 
@@ -56,10 +77,10 @@ class Dokumen extends Controller
      * Display the specified resource.
      */
    public function show($id)
-{
-    $dokumen = DokumenHukum::with(['jenis', 'kategori'])->findOrFail($id);
-    return view('pages.dokumen.show', compact('dokumen'));
-}
+    {
+        $dokumen = DokumenHukum::with(['jenis', 'kategori'])->findOrFail($id);
+        return view('pages.dokumen.show', compact('dokumen'));
+    }
 
     /**
      * Show the form for editing the specified resource.
