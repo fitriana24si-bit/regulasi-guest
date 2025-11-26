@@ -13,6 +13,11 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
+        // **SOLUSI: Hapus dulu user yang bermasalah**
+        User::where('email', 'admin@data.id')->delete();
+        User::where('email', 'admin@desa.id')->delete();
+        User::where('email', 'operator@desa.id')->delete();
+
         // Gunakan firstOrCreate untuk admin dan operator
         User::firstOrCreate(
             ['email' => 'admin@desa.id'],
@@ -32,7 +37,10 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Tambahkan 100 user dummy
+        // **OPTIONAL: Reset unique() generator untuk Faker**
+        $faker->unique(true); // reset unique generator
+
+        // Tambahkan user dummy
         $this->command->info('🔄 Membuat 100 user dummy...');
 
         $progressBar = $this->command->getOutput()->createProgressBar(100);
@@ -45,7 +53,7 @@ class UserSeeder extends Seeder
                     'name' => $faker->name,
                     'password' => Hash::make('password123'),
                     'email_verified_at' => now(),
-                    'created_at' => now()->subDays(rand(1, 365)), // random date dalam 1 tahun terakhir
+                    'created_at' => now()->subDays(rand(1, 365)),
                     'updated_at' => now(),
                 ]
             );
@@ -54,7 +62,7 @@ class UserSeeder extends Seeder
         }
 
         $progressBar->finish();
-        $this->command->newLine(2); // Tambahkan 2 baris baru setelah progress bar
+        $this->command->newLine(2);
         $this->command->info('✅ 102 User berhasil di-seed! (2 user utama + 100 user dummy)');
     }
 }

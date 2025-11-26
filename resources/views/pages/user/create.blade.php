@@ -37,6 +37,12 @@
                                value="{{ old('email') }}" placeholder="Masukkan email" required>
                     </div>
 
+                     <div class="mb-3">
+                        <label for="role" class="form-label fw-semibold">Role</label>
+                        <input type="role" id="role" name="role" class="form-control rounded-pill"
+                               value="{{ old('role') }}" placeholder="Masukkan role" required>
+                    </div>
+
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
                         <input type="password" id="password" name="password" class="form-control rounded-pill"

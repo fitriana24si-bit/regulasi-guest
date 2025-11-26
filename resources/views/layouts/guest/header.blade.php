@@ -21,8 +21,8 @@
                     </a>
                 </li>
 
-                 <li>
-                    <a href="{{ route('user') }}" class="{{ request()->routeIs('user.*') ? 'active' : '' }}">
+                <li>
+                    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('user.*') ? 'active' : '' }}">
                         User
                     </a>
                 </li>
@@ -40,27 +40,31 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('kategori.index') }}" class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}">
+                    <a href="{{ route('kategori.index') }}"
+                        class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}">
                         Kategori
                     </a>
                 </li>
 
 
                 <li>
-                    <a href="{{ route('dokumen.index') }}" class="{{ request()->routeIs('dokumen.*') ? 'active' : '' }}">
+                    <a href="{{ route('dokumen.index') }}"
+                        class="{{ request()->routeIs('dokumen.*') ? 'active' : '' }}">
                         Dokumen
                     </a>
                 </li>
 
 
                 <li>
-                    <a href="{{ route('lampiran.index') }}" class="{{ request()->routeIs('lampiran.*') ? 'active' : '' }}">
+                    <a href="{{ route('lampiran.index') }}"
+                        class="{{ request()->routeIs('lampiran.*') ? 'active' : '' }}">
                         Lampiran
                     </a>
                 </li>
 
                 <li>
-                    <a href="{{ route('riwayat.index') }}" class="{{ request()->routeIs('riwayat.*') ? 'active' : '' }}">
+                    <a href="{{ route('riwayat.index') }}"
+                        class="{{ request()->routeIs('riwayat.*') ? 'active' : '' }}">
                         Riwayat
                     </a>
                 </li>

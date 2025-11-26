@@ -12,7 +12,8 @@
             <div class="card-body p-5" data-aos="fade-up" data-aos-duration="800">
                 <h3 class="mb-4 text-center text-success fw-bold">✏️ Edit Data Warga</h3>
 
-                <form action="{{ route('warga.update', ['id' => $warga->warga_id]) }}" method="POST">
+                <form action="{{ route('warga.update', ['warga' => $warga->warga_id]) }}" method="POST">
+
                     @csrf
                     @method('PUT')
 

@@ -15,9 +15,7 @@
                         style="background: linear-gradient(90deg, #43a047, #66bb6a); border: none;">
                         + Tambah User
                     </a>
-                    <a href="{{ url()->previous() }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                        ⬅️ Kembali
-                    </a>
+                   
                 </div>
             </div>
 
