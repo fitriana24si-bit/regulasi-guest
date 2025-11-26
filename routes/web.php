@@ -100,18 +100,19 @@ Route::prefix('jenis')->middleware('auth')->group(function () {
 | Route: Kategori / Dokumen / Riwayat / Lampiran
 |--------------------------------------------------------------------------
 */
-
+Route::middleware('auth')->group(function () {
 Route::get('/kategori', [RegnaController::class, 'kategori'])->name('kategori.index');
 Route::get('/dokumen', [RegnaController::class, 'dokumen'])->name('dokumen.index');
 Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 Route::get('/lampiran', [RegnaController::class, 'lampiran'])->name('lampiran.index');
-
+});
 /*
 |--------------------------------------------------------------------------
 | Resource: Kategori & Dokumen & Warga
 |--------------------------------------------------------------------------
 */
-
+Route::middleware('auth')->group(function () {
 Route::resource('kategori', Kategori::class);
 Route::resource('dokumen', Dokumen::class);
 Route::resource('warga', WargaController::class);
+});
