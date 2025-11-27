@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <a href="https://wa.me/6285194727600?text=Halo%20Admin%20Desa,%20saya%20ingin%20bertanya%20tentang%20portal%20desa."
+        <a href="https://wa.me/6289525819432?text=Halo%20Admin%20Cantik,%20saya%20ingin%20bertanya%20tentang%20produk hukum."
             class="whatsapp-float" target="_blank" title="Chat via WhatsApp">
             <i class="bi bi-whatsapp"></i>
         </a>
