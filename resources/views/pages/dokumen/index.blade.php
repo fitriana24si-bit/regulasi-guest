@@ -185,7 +185,7 @@
                     <!-- Nomor Urut dan Status -->
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <small class="text-muted">
-                            #{{ ($dokumens->currentPage() - 1) * $dokumens->perPage() + $loop->iteration }}
+                            {{ ($dokumens->currentPage() - 1) * $dokumens->perPage() + $loop->iteration }}
                         </small>
                         <span class="badge {{ $dokumen->status == 'aktif' ? 'bg-success' : 'bg-danger' }}">
                             {{ ucfirst($dokumen->status) }}

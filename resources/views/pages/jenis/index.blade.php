@@ -111,7 +111,7 @@
                     <!-- Nomor Urut -->
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <span class="badge bg-primary">
-                            #{{ ($jenisDokumen->currentPage() - 1) * $jenisDokumen->perPage() + $loop->iteration }}
+                            {{ ($jenisDokumen->currentPage() - 1) * $jenisDokumen->perPage() + $loop->iteration }}
                         </span>
                         <div class="dropdown">
                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"

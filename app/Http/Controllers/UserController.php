@@ -5,76 +5,94 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    // ============================
-    // INDEX (LIST DATA USER)
-    // ============================
     public function index(Request $request)
     {
-        $filters = $request->only(['search', 'role', 'status', 'sort']);
-        $perPage = $request->input('per_page', 10);
+        $query = User::query();
 
-        $users = User::filter($filters)
-            ->paginate($perPage)
-            ->withQueryString();
+        if ($request->search) {
+            $query->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('email', 'like', "%{$request->search}%");
+        }
 
-        return view('pages.user.index', compact('users', 'filters', 'perPage'));
+        if ($request->role && $request->role != 'all') {
+            $query->where('role', $request->role);
+        }
+
+        if ($request->status && $request->status != 'all') {
+            if ($request->status == 'verified') {
+                $query->whereNotNull('email_verified_at');
+            } else {
+                $query->whereNull('email_verified_at');
+            }
+        }
+
+        if ($request->sort == 'oldest') {
+            $query->orderBy('created_at', 'asc');
+        } elseif ($request->sort == 'name_asc') {
+            $query->orderBy('name', 'asc');
+        } elseif ($request->sort == 'name_desc') {
+            $query->orderBy('name', 'desc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $users = $query->paginate($request->per_page ?? 10);
+
+        return view('pages.user.index', compact('users'));
     }
 
-    // ============================
-    // CREATE FORM
-    // ============================
     public function create()
     {
         return view('pages.user.create');
     }
 
-    // ============================
-    // STORE USER BARU
-    // ============================
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'role'     => 'required|string|in:admin,operator,user',
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email',
+            'role'          => 'required',
+            'password'      => 'required|min:6|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $path = null;
+        if ($request->hasFile('profile_image')) {
+            $path = $request->file('profile_image')->store('profile_images', 'public');
+        }
 
         User::create([
-            'name'              => $request->name,
-            'email'             => $request->email,
-            'password'          => Hash::make($request->password),
-            'role'              => $request->role,
-            'email_verified_at' => now(),
+            'name'          => $request->name,
+            'email'         => $request->email,
+            'role'          => $request->role,
+            'password'      => Hash::make($request->password),
+            'profile_image' => $path,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan!');
     }
 
-    // ============================
-    // EDIT USER
-    // ============================
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        return view('pages.user.edit', compact('user'));
+        return view('pages.user.edit', [
+            'user' => User::findOrFail($id)
+        ]);
     }
 
-    // ============================
-    // UPDATE USER
-    // ============================
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed',
-            'role'     => 'required|string|in:admin,operator,user',
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email,' . $user->id,
+            'role'          => 'required',
+            'password'      => 'nullable|min:6|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = [
@@ -83,29 +101,37 @@ class UserController extends Controller
             'role'  => $request->role,
         ];
 
-        if ($request->password) {
+        if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
+        }
+
+        // Upload foto baru
+        if ($request->hasFile('profile_image')) {
+
+            // Hapus foto lama
+            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            // Simpan foto baru
+            $data['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
         }
 
         $user->update($data);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diupdate.');
+        return redirect()->route('user.index')->with('success', 'User berhasil diperbarui!');
     }
 
-    // ============================
-    // DELETE USER
-    // ============================
     public function destroy($id)
     {
         $user = User::findOrFail($id);
 
-        // Tidak boleh hapus diri sendiri
-        if ($user->id === auth()->id()) {
-            return redirect()->route('users.index')->with('error', 'Tidak dapat menghapus akun sendiri.');
+        if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+            Storage::disk('public')->delete($user->profile_image);
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+        return back()->with('success', 'User berhasil dihapus!');
     }
 }

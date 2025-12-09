@@ -6,15 +6,13 @@ use App\Http\Controllers\RegnaController;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\Kategori;
 use App\Http\Controllers\Dokumen;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Lampiran;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
-| Route: Halaman Statik
+| Halaman Statik
 |--------------------------------------------------------------------------
 */
 
@@ -24,7 +22,7 @@ Route::get('/about', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Route: Dashboard
+| Dashboard
 |--------------------------------------------------------------------------
 */
 
@@ -32,10 +30,9 @@ Route::get('/', [RegnaController::class, 'dashboard'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
-| Route: Auth (Guest Only)
+| Auth Guest Only
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('guest')->middleware('guest')->group(function () {
     Route::get('/jenis/create', [RegnaController::class, 'jenisCreateGuest'])->name('guest.jenis.create');
     Route::post('/jenis/store', [RegnaController::class, 'jenisStoreGuest'])->name('guest.jenis.store');
@@ -49,43 +46,30 @@ Route::prefix('guest')->middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Route: Logout (Auth Only)
+| Logout
 |--------------------------------------------------------------------------
 */
-
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
-| Route: User Management (Auth Only) → PAKAI RESOURCE
-|--------------------------------------------------------------------------
-|  users.index
-|  users.create
-|  users.store
-|  users.edit
-|  users.update
-|  users.destroy
+| User Management
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('auth')->group(function () {
+    Route::resource('/users', UserController::class);
     Route::resource('users', UserController::class)->except(['show']);
-
-    // Edit profil user login
     Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
-
-    // Update profil user login
     Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Route: Jenis (Regna)
+| Jenis (Regna)
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('jenis')->middleware('auth')->group(function () {
     Route::get('/', [RegnaController::class, 'jenis'])->name('jenis.index');
     Route::get('/create', [RegnaController::class, 'jenisCreate'])->name('jenis.create');
@@ -97,22 +81,55 @@ Route::prefix('jenis')->middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Route: Kategori / Dokumen / Riwayat / Lampiran
+| Halaman Kategori / Dokumen / Riwayat / Lampiran (Static View)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-Route::get('/kategori', [RegnaController::class, 'kategori'])->name('kategori.index');
-Route::get('/dokumen', [RegnaController::class, 'dokumen'])->name('dokumen.index');
-Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
-Route::get('/lampiran', [RegnaController::class, 'lampiran'])->name('lampiran.index');
+    Route::get('/kategori', [RegnaController::class, 'kategori'])->name('kategori.index');
+    Route::get('/dokumen', [RegnaController::class, 'dokumen'])->name('dokumen.index');
+    Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 });
+
 /*
 |--------------------------------------------------------------------------
-| Resource: Kategori & Dokumen & Warga
+| Resource: Kategori / Dokumen / Warga
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-Route::resource('kategori', Kategori::class);
-Route::resource('dokumen', Dokumen::class);
-Route::resource('warga', WargaController::class);
+    Route::resource('kategori', Kategori::class);
+    Route::resource('dokumen', Dokumen::class);
+    Route::resource('warga', WargaController::class);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Resource: Lampiran (CRUD LAMPIRAN)
+|--------------------------------------------------------------------------
+|
+| Ini adalah route utama untuk upload / hapus / lihat lampiran
+| NON-DUPLIKAT. Hanya pakai RESOURCE.
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    Route::resource('lampiran', Lampiran::class)
+        ->names([
+            'index' => 'lampiran.index',
+            'create' => 'lampiran.create',
+            'store' => 'lampiran.store',
+            'show' => 'lampiran.show',
+            'edit' => 'lampiran.edit',
+            'update' => 'lampiran.update',
+            'destroy' => 'lampiran.destroy',
+        ]);
+});
+
+Route::resource('lampiran', Lampiran::class);
+
+Route::get('/lampiran/{id}/download', [Lampiran::class, 'download'])->name('lampiran.download');
+
+Route::middleware(['auth'])->group(function () {
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+Route::post('/profile/upload', [ProfileController::class, 'upload'])->name('profile.upload');
 });

@@ -10,16 +10,11 @@ return new class extends Migration
     {
         Schema::create('lampiran_dokumen', function (Blueprint $table) {
             $table->id('lampiran_id');
-
-            // PERBAIKI: Gunakan 'dokumen_hukum' (tanpa s)
             $table->unsignedBigInteger('dokumen_id');
-            $table->foreign('dokumen_id')->references('dokumen_id')->on('dokumen_hukum')->onDelete('cascade');
-
-            $table->string('nama_file');
-            $table->string('file_path');
-            $table->string('tipe_file')->nullable();
-            $table->integer('ukuran_file')->nullable();
+            $table->string('keterangan')->nullable();
             $table->timestamps();
+
+            $table->foreign('dokumen_id')->references('dokumen_id')->on('dokumen_hukum')->onDelete('cascade');
         });
     }
 

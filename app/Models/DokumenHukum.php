@@ -10,8 +10,8 @@ class DokumenHukum extends Model
 {
     use HasFactory;
 
-    // PERBAIKI: Ubah jadi tanpa 's'
-    protected $table = 'dokumen_hukum'; // ← UBAH INI (HAPUS 's')
+    
+    protected $table = 'dokumen_hukum';
     protected $primaryKey = 'dokumen_id';
 
     protected $fillable = [

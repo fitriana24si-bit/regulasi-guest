@@ -34,7 +34,7 @@ class WargaController extends Controller
                 $query->where('pekerjaan', $request->pekerjaan);
             })
             ->latest()
-            ->paginate(12) // ✅ UBAH: dari 15 jadi 12 (sesuai grid layout 4 kolom)
+            ->paginate(12) 
             ->withQueryString()
             ->onEachSide(2);
 
