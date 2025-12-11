@@ -1,17 +1,15 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class DokumenHukum extends Model
 {
     use HasFactory;
 
-    
-    protected $table = 'dokumen_hukum';
+    protected $table      = 'dokumen_hukum';
     protected $primaryKey = 'dokumen_id';
 
     protected $fillable = [
@@ -21,7 +19,7 @@ class DokumenHukum extends Model
         'judul',
         'tanggal',
         'ringkasan',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -42,6 +40,11 @@ class DokumenHukum extends Model
         return $this->belongsTo(JenisDokumen::class, 'id_jenis', 'id_jenis');
     }
 
+    public function lampiran()
+    {
+        return $this->hasMany(LampiranDokumen::class, 'dokumen_id', 'dokumen_id');
+    }
+
     // Scope untuk filter
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
@@ -57,7 +60,7 @@ class DokumenHukum extends Model
     public function scopeSearch($query, $request, array $columns)
     {
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request, $columns) {
+            $query->where(function ($q) use ($request, $columns) {
                 foreach ($columns as $column) {
                     $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
                 }

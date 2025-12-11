@@ -73,7 +73,7 @@ class UserController extends Controller
             'profile_image' => $path,
         ]);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('pages.user.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     public function edit($id)
@@ -119,7 +119,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil diperbarui!');
+        return redirect()->route('pages.user.index')->with('success', 'User berhasil diperbarui!');
     }
 
     public function destroy($id)

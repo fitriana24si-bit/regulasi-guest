@@ -11,9 +11,24 @@ class Lampiran extends Controller
     // =============================
     // TAMPILKAN SEMUA LAMPIRAN
     // =============================
-    public function index()
+    public function index(Request $request)
     {
-        $lampiran = LampiranDokumen::with('dokumen')->latest()->get();
+        // Kolom yang bisa dicari
+        $searchableColumns = ['nama_file', 'tipe_file'];
+
+        $lampiran = LampiranDokumen::with('dokumen')
+            ->when($request->filled('search'), function ($query) use ($request, $searchableColumns) {
+                $query->where(function ($q) use ($request, $searchableColumns) {
+                    foreach ($searchableColumns as $col) {
+                        $q->orWhere($col, 'LIKE', '%' . $request->search . '%');
+                    }
+                });
+            })
+            ->latest()
+            ->paginate(10) // <---- PAGINATION DITAMBAHKAN DI SINI
+            ->withQueryString()
+            ->onEachSide(2);
+
         return view('pages.lampiran.index', compact('lampiran'));
     }
 
@@ -41,7 +56,7 @@ class Lampiran extends Controller
             foreach ($request->file('file') as $f) {
 
                 $filename = time() . '_' . preg_replace('/\s+/', '_', $f->getClientOriginalName());
-                $path = $f->storeAs('lampiran', $filename, 'public');
+                $path     = $f->storeAs('lampiran', $filename, 'public');
 
                 LampiranDokumen::create([
                     'dokumen_id'  => $request->dokumen_id,
@@ -71,7 +86,7 @@ class Lampiran extends Controller
     public function edit($id)
     {
         $lampiran = LampiranDokumen::findOrFail($id);
-        $dokumen = DokumenHukum::all();
+        $dokumen  = DokumenHukum::all();
 
         return view('pages.lampiran.edit', compact('lampiran', 'dokumen'));
     }
@@ -85,16 +100,16 @@ class Lampiran extends Controller
 
         $request->validate([
             'dokumen_id' => 'required',
-            'file'       => 'nullable|mimes:pdf,doc,docx,jpg,png|max:5120'
+            'file'       => 'nullable|mimes:pdf,doc,docx,jpg,png|max:5120',
         ]);
 
         // kalau user upload file baru → hapus file lama
         if ($request->hasFile('file')) {
             Storage::disk('public')->delete($lampiran->file_path);
 
-            $f = $request->file('file');
+            $f        = $request->file('file');
             $filename = time() . '_' . preg_replace('/\s+/', '_', $f->getClientOriginalName());
-            $path = $f->storeAs('lampiran', $filename, 'public');
+            $path     = $f->storeAs('lampiran', $filename, 'public');
 
             $lampiran->update([
                 'nama_file'   => $f->getClientOriginalName(),
@@ -106,7 +121,7 @@ class Lampiran extends Controller
 
         // update dokumen_id saja (kalau tidak ganti file)
         $lampiran->update([
-            'dokumen_id' => $request->dokumen_id
+            'dokumen_id' => $request->dokumen_id,
         ]);
 
         return redirect()->route('lampiran.index')->with('success', 'Lampiran berhasil diperbarui');

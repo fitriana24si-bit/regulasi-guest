@@ -10,13 +10,13 @@
             </h2>
 
             {{-- TOMBOL TAMBAH USER --}}
-            <a href="{{ route('users.create') }}" class="btn btn-success shadow-sm">
+            <a href="{{ route('pages.user.create') }}" class="btn btn-success shadow-sm">
                 <i class="bi bi-plus-circle"></i> Tambah User
             </a>
         </div>
 
         {{-- ================= FILTER FORM ================= --}}
-        <form method="GET" action="{{ route('users.index') }}" class="mb-4">
+        <form method="GET" action="{{ route('pages.user.index') }}" class="mb-4">
             <div class="row g-2">
 
                 <div class="col-md-3">
@@ -66,7 +66,7 @@
             @if (request()->query() != [])
                 <div class="mt-2">
                     {{-- FIXED --}}
-                    <a href="{{ route('users.index') }}" class="btn btn-secondary btn-sm">Reset Filter</a>
+                    <a href="{{ route('pages.user.index') }}" class="btn btn-secondary btn-sm">Reset Filter</a>
                 </div>
             @endif
         </form>
@@ -115,13 +115,13 @@
                             <div class="d-flex justify-content-center gap-2 mt-2">
 
                                 {{-- EDIT - FIXED --}}
-                                <a href="{{ route('users.edit', $u->id) }}"
+                                <a href="{{ route('pages.user.edit', $u->id) }}"
                                    class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
 
                                 {{-- DELETE - FIXED --}}
-                                <form method="POST" action="{{ route('users.destroy', $u->id) }}">
+                                <form method="POST" action="{{ route('pages.user.destroy', $u->id) }}">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-sm btn-danger"
                                         onclick="return confirm('Yakin ingin menghapus user ini?')">

@@ -22,7 +22,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('user.*') ? 'active' : '' }}">
+                    <a href="{{ route('pages.user.index') }}" class="{{ request()->routeIs('user.*') ? 'active' : '' }}">
                         User
                     </a>
                 </li>

@@ -12,9 +12,14 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Statik
+| Static Pages
 |--------------------------------------------------------------------------
 */
+
+Route::get('/dashboard', function () {
+    return view('pages.dashboard');
+})->name('dashboard');
+
 
 Route::get('/about', function () {
     return view('pages.about');
@@ -22,12 +27,13 @@ Route::get('/about', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard
+| Landing Page
 |--------------------------------------------------------------------------
 */
+Route::get('/', [RegnaController::class, 'dashboard'])->name('landing');
 
-Route::get('/', [RegnaController::class, 'dashboard'])->name('dashboard');
-
+ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+ Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 /*
 |--------------------------------------------------------------------------
 | Auth Guest Only
@@ -38,10 +44,9 @@ Route::prefix('guest')->middleware('guest')->group(function () {
     Route::post('/jenis/store', [RegnaController::class, 'jenisStoreGuest'])->name('guest.jenis.store');
 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
 });
 
 /*
@@ -55,14 +60,16 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
-| User Management
+| User Management (FIXED)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-    Route::resource('/users', UserController::class);
-    Route::resource('users', UserController::class)->except(['show']);
-    Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
-    Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
+Route::middleware('auth')->prefix('users')->name('pages.user.')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::get('/create', [UserController::class, 'create'])->name('create');
+    Route::post('/', [UserController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [UserController::class, 'update'])->name('update');
+    Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
 });
 
 /*
@@ -81,7 +88,7 @@ Route::prefix('jenis')->middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Kategori / Dokumen / Riwayat / Lampiran (Static View)
+| Static Menu Pages
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -92,7 +99,7 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Resource: Kategori / Dokumen / Warga
+| Resources
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -103,33 +110,22 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Resource: Lampiran (CRUD LAMPIRAN)
-|--------------------------------------------------------------------------
-|
-| Ini adalah route utama untuk upload / hapus / lihat lampiran
-| NON-DUPLIKAT. Hanya pakai RESOURCE.
+| Lampiran
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('auth')->group(function () {
+    Route::resource('lampiran', Lampiran::class);
 
-    Route::resource('lampiran', Lampiran::class)
-        ->names([
-            'index' => 'lampiran.index',
-            'create' => 'lampiran.create',
-            'store' => 'lampiran.store',
-            'show' => 'lampiran.show',
-            'edit' => 'lampiran.edit',
-            'update' => 'lampiran.update',
-            'destroy' => 'lampiran.destroy',
-        ]);
+    Route::get('/lampiran/{id}/download', [Lampiran::class, 'download'])
+        ->name('lampiran.download');
 });
 
-Route::resource('lampiran', Lampiran::class);
-
-Route::get('/lampiran/{id}/download', [Lampiran::class, 'download'])->name('lampiran.download');
-
+/*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-Route::post('/profile/upload', [ProfileController::class, 'upload'])->name('profile.upload');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/upload', [ProfileController::class, 'upload'])->name('profile.upload');
 });

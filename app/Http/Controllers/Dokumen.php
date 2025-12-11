@@ -1,12 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\DokumenHukum;
 use App\Models\JenisDokumen;
 use App\Models\KategoriDokumen;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 
 class Dokumen extends Controller
 {
@@ -23,8 +21,8 @@ class Dokumen extends Controller
 
         // Query dengan filter, search, dan pagination
         $dokumens = DokumenHukum::with(['jenis', 'kategori'])
-            ->when($request->filled('search'), function($query) use ($request, $searchableColumns) {
-                $query->where(function($q) use ($request, $searchableColumns) {
+            ->when($request->filled('search'), function ($query) use ($request, $searchableColumns) {
+                $query->where(function ($q) use ($request, $searchableColumns) {
                     foreach ($searchableColumns as $column) {
                         $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
                     }
@@ -36,7 +34,7 @@ class Dokumen extends Controller
             ->withQueryString()
             ->onEachSide(2); // TIPS 1: hanya tampilkan 2 halaman sebelum & sesudah
 
-        $jenis = JenisDokumen::all();
+        $jenis     = JenisDokumen::all();
         $kategoris = KategoriDokumen::all();
 
         return view('pages.dokumen.index', compact('dokumens', 'jenis', 'kategoris'));
@@ -47,7 +45,7 @@ class Dokumen extends Controller
      */
     public function create()
     {
-        $jenis = JenisDokumen::all();
+        $jenis     = JenisDokumen::all();
         $kategoris = KategoriDokumen::all();
         return view('pages.dokumen.create', compact('jenis', 'kategoris'));
     }
@@ -58,13 +56,13 @@ class Dokumen extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_jenis' => 'required|exists:jenis_dokumen,id_jenis',
+            'id_jenis'    => 'required|exists:jenis_dokumen,id_jenis',
             'kategori_id' => 'required|exists:kategori_dokumen,kategori_id',
-            'nomor' => 'required|string|unique:dokumen_hukum,nomor',
-            'judul' => 'required|string|max:255',
-            'tanggal' => 'required|date',
-            'ringkasan' => 'nullable|string',
-            'status' => 'required|in:aktif,tidak_aktif'
+            'nomor'       => 'required|string|unique:dokumen_hukum,nomor',
+            'judul'       => 'required|string|max:255',
+            'tanggal'     => 'required|date',
+            'ringkasan'   => 'nullable|string',
+            'status'      => 'required|in:aktif,tidak_aktif',
         ]);
 
         DokumenHukum::create($request->all());
@@ -76,9 +74,9 @@ class Dokumen extends Controller
     /**
      * Display the specified resource.
      */
-   public function show($id)
+    public function show($id)
     {
-        $dokumen = DokumenHukum::with(['jenis', 'kategori'])->findOrFail($id);
+        $dokumen = DokumenHukum::with(['jenis', 'kategori', 'lampiran'])->findOrFail($id);
         return view('pages.dokumen.show', compact('dokumen'));
     }
 
@@ -87,8 +85,8 @@ class Dokumen extends Controller
      */
     public function edit($id)
     {
-        $dokumen = DokumenHukum::findOrFail($id);
-        $jenis = JenisDokumen::all();
+        $dokumen   = DokumenHukum::findOrFail($id);
+        $jenis     = JenisDokumen::all();
         $kategoris = KategoriDokumen::all();
         return view('pages.dokumen.edit', compact('dokumen', 'jenis', 'kategoris'));
     }
@@ -99,13 +97,13 @@ class Dokumen extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_jenis' => 'required|exists:jenis_dokumen,id_jenis',
+            'id_jenis'    => 'required|exists:jenis_dokumen,id_jenis',
             'kategori_id' => 'required|exists:kategori_dokumen,kategori_id',
-            'nomor' => 'required|string|unique:dokumen_hukum,nomor,' . $id . ',dokumen_id',
-            'judul' => 'required|string|max:255',
-            'tanggal' => 'required|date',
-            'ringkasan' => 'nullable|string',
-            'status' => 'required|in:aktif,tidak_aktif'
+            'nomor'       => 'required|string|unique:dokumen_hukum,nomor,' . $id . ',dokumen_id',
+            'judul'       => 'required|string|max:255',
+            'tanggal'     => 'required|date',
+            'ringkasan'   => 'nullable|string',
+            'status'      => 'required|in:aktif,tidak_aktif',
         ]);
 
         $dokumen = DokumenHukum::findOrFail($id);
