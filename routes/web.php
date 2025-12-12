@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [RegnaController::class, 'dashboard'])->name('landing');
 
+
 Route::prefix('guest')->middleware('guest')->group(function () {
     Route::get('/jenis/create', [RegnaController::class, 'jenisCreateGuest'])->name('guest.jenis.create');
     Route::post('/jenis/store', [RegnaController::class, 'jenisStoreGuest'])->name('guest.jenis.store');
