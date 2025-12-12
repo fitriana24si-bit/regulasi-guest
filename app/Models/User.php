@@ -16,7 +16,7 @@ class User extends Authenticatable
         'password',
         'role',
         'email_verified_at',
-        'profile_image',  // ← WAJIB
+        'profile_image',
     ];
 
     protected $hidden = [
@@ -61,5 +61,43 @@ class User extends Authenticatable
         }
 
         return $query;
+    }
+
+    // ========== TAMBAHKAN METHOD BERIKUT ==========
+
+    // Cek apakah user adalah admin
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    // Cek apakah user adalah user biasa
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+    // Scope untuk query admin
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    // Scope untuk query user biasa
+    public function scopeUsers($query)
+    {
+        return $query->where('role', 'user');
+    }
+
+    // Get role label
+    public function getRoleLabelAttribute(): string
+    {
+        return $this->role === 'admin' ? 'Admin' : 'User';
+    }
+
+    // Get role badge class
+    public function getRoleBadgeClassAttribute(): string
+    {
+        return $this->role === 'admin' ? 'badge bg-danger' : 'badge bg-primary';
     }
 }

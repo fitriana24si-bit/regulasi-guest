@@ -24,7 +24,7 @@
                 @endif
 
                 {{-- Form Create User --}}
-                <form action="{{ route('pages.user.store') }}" method="POST">
+                <form action="{{ route('pages.user.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     {{-- NAMA --}}
@@ -49,6 +49,13 @@
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
                         </select>
+                    </div>
+
+                    {{-- PROFILE IMAGE --}}
+                    <div class="mb-3">
+                        <label for="profile_image" class="form-label fw-semibold">Foto Profil (Opsional)</label>
+                        <input type="file" id="profile_image" name="profile_image" class="form-control rounded-pill" accept="image/*">
+                        <small class="text-muted">Maksimal 2MB. Format: JPG, JPEG, PNG</small>
                     </div>
 
                     {{-- PASSWORD --}}

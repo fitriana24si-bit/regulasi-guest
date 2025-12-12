@@ -5,17 +5,20 @@
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4">
         <div class="mb-3 mb-md-0">
-            <h1 class="h3 mb-2 text-gradient-primary">
-                <i class="fas fa-folder-tree me-2"></i>Kategori Dokumen
+            <h1 class="h3 mb-2 text-dark">
+                <i class="fas fa-folder-tree me-2 text-primary"></i>Kategori Dokumen
             </h1>
             <p class="text-muted mb-0">
                 <i class="fas fa-info-circle me-1"></i>
                 Kelola kategori untuk mengorganisir dokumen dengan baik
             </p>
         </div>
-        <a href="{{ route('kategori.create') }}" class="btn btn-primary shadow-sm">
-            <i class="fas fa-plus-circle me-1"></i>Tambah Kategori
-        </a>
+        {{-- Tombol Tambah hanya untuk Admin --}}
+        @if(auth()->user()->role === 'admin')
+            <a href="{{ route('kategori.create') }}" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus-circle me-1"></i>Tambah Kategori
+            </a>
+        @endif
     </div>
 
     @if(session('success'))
@@ -26,17 +29,29 @@
     </div>
     @endif
 
+    {{-- Notifikasi untuk User --}}
+    @if(auth()->user()->role === 'user')
+    <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        <div class="flex-grow-1">
+            <strong>Info:</strong> Anda login sebagai <strong>User</strong>.
+            Anda hanya dapat melihat data kategori, tidak dapat menambah, mengedit, atau menghapus.
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card bg-primary text-white h-100">
+            <div class="card stat-card bg-white border h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->total() }}</div>
-                            <div class="stat-label">Total Kategori</div>
+                            <div class="stat-value text-primary">{{ $kategoris->total() }}</div>
+                            <div class="stat-label text-muted">Total Kategori</div>
                         </div>
-                        <div class="stat-icon">
+                        <div class="stat-icon text-primary">
                             <i class="fas fa-folder fa-2x"></i>
                         </div>
                     </div>
@@ -44,14 +59,14 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card bg-success text-white h-100">
+            <div class="card stat-card bg-white border h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->sum('dokumen_hukum_count') }}</div>
-                            <div class="stat-label">Total Dokumen</div>
+                            <div class="stat-value text-success">{{ $kategoris->sum('dokumen_hukum_count') }}</div>
+                            <div class="stat-label text-muted">Total Dokumen</div>
                         </div>
-                        <div class="stat-icon">
+                        <div class="stat-icon text-success">
                             <i class="fas fa-file-alt fa-2x"></i>
                         </div>
                     </div>
@@ -59,14 +74,14 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card bg-warning text-white h-100">
+            <div class="card stat-card bg-white border h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="stat-value">{{ $kategoris->count() }}</div>
-                            <div class="stat-label">Ditampilkan</div>
+                            <div class="stat-value text-warning">{{ $kategoris->count() }}</div>
+                            <div class="stat-label text-muted">Ditampilkan</div>
                         </div>
-                        <div class="stat-icon">
+                        <div class="stat-icon text-warning">
                             <i class="fas fa-eye fa-2x"></i>
                         </div>
                     </div>
@@ -74,7 +89,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card bg-info text-white h-100">
+            <div class="card stat-card bg-white border h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
@@ -86,10 +101,10 @@
                                            $kategori->created_at->year == $currentYear;
                                 })->count();
                             @endphp
-                            <div class="stat-value">{{ $kategoriTerbaru }}</div>
-                            <div class="stat-label">Bulan Ini</div>
+                            <div class="stat-value text-info">{{ $kategoriTerbaru }}</div>
+                            <div class="stat-label text-muted">Bulan Ini</div>
                         </div>
-                        <div class="stat-icon">
+                        <div class="stat-icon text-info">
                             <i class="fas fa-calendar-plus fa-2x"></i>
                         </div>
                     </div>
@@ -99,20 +114,20 @@
     </div>
 
     <!-- Search Section -->
-    <div class="card shadow-lg border-0 mb-4">
-        <div class="card-header bg-transparent py-3">
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
             <h5 class="mb-0">
                 <i class="fas fa-search me-2 text-primary"></i>
                 Pencarian Kategori
             </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body bg-white">
             <form method="GET" action="{{ route('kategori.index') }}" id="searchForm">
                 <div class="row g-3 align-items-end">
                     <div class="col-lg-8">
                         <label class="form-label small fw-bold text-muted">Cari Kategori</label>
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control"
+                            <input type="text" name="search" class="form-control border"
                                    value="{{ request('search') }}"
                                    placeholder="Cari berdasarkan nama atau deskripsi kategori...">
                             <button type="submit" class="btn btn-primary">
@@ -130,9 +145,6 @@
                             <span class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i>
                                 {{ $kategoris->total() }} kategori ditemukan
-                                @if(request('search'))
-                                    (hasil pencarian)
-                                @endif
                             </span>
                         </div>
                     </div>
@@ -145,76 +157,84 @@
     <div class="row" id="kategoriCards">
         @forelse($kategoris as $index => $kategori)
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card kategori-card h-100 border-0 shadow-sm">
-                <!-- Category Header with Gradient -->
-                <div class="card-header-custom position-relative overflow-hidden">
-                    <div class="category-gradient-{{ ($loop->index % 4) + 1 }}"></div>
-                    <div class="position-relative z-1">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="category-icon">
-                                <i class="fas fa-folder-open"></i>
-                            </div>
-                            <span class="badge bg-white text-dark category-badge">
-                                {{ $kategori->dokumen_hukum_count }} Dokumen
-                            </span>
-                        </div>
-                        <h5 class="category-title mt-3 mb-1">{{ $kategori->nama }}</h5>
-                        <small class="text-white-50">
-                            <i class="fas fa-calendar me-1"></i>
-                            {{ $kategori->created_at->format('d/m/Y') }}
-                        </small>
-                    </div>
+            <div class="card kategori-card h-100 border shadow-sm">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-folder-open text-primary me-2"></i>
+                        {{ $kategori->nama }}
+                        @if(auth()->user()->role === 'user')
+                            <span class="badge bg-secondary ms-2">Read Only</span>
+                        @endif
+                    </h5>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body bg-white">
                     <!-- Description -->
-                    <div class="category-description mb-3">
+                    <div class="kategori-description mb-3">
                         <p class="text-muted mb-2">
                             @if($kategori->deskripsi)
                                 {{ Str::limit($kategori->deskripsi, 120) }}
                             @else
-                                <span class="fst-italic">Tidak ada deskripsi</span>
+                                <span class="fst-italic text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Tidak ada deskripsi
+                                </span>
                             @endif
                         </p>
                     </div>
 
                     <!-- Metadata -->
-                    <div class="category-meta mb-3">
-                        <div class="meta-item">
-                            <i class="fas fa-hashtag text-primary me-2"></i>
-                            <small class="text-muted">ID: {{ $kategori->kategori_id }}</small>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-clock text-warning me-2"></i>
-                            <small class="text-muted">
-                                Diperbarui: {{ $kategori->updated_at->diffForHumans() }}
-                            </small>
+                    <div class="kategori-meta mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="meta-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-hashtag me-1"></i>
+                                        ID: {{ $kategori->kategori_id }}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="meta-item text-end">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ $kategori->created_at->format('d/m/Y') }}
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="category-actions d-flex gap-2">
-                        <a href="{{ route('kategori.edit', $kategori->kategori_id) }}"
-                           class="btn btn-outline-warning btn-sm flex-fw d-flex align-items-center justify-content-center">
-                            <i class="fas fa-edit me-1"></i>
-                            <span class="d-none d-sm-inline">Edit</span>
-                        </a>
+                    <div class="kategori-actions d-flex gap-2 mt-3 pt-3 border-top">
+                        {{-- Edit button hanya untuk admin --}}
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('kategori.edit', $kategori->kategori_id) }}"
+                               class="btn btn-outline-warning btn-sm flex-fw d-flex align-items-center justify-content-center">
+                                <i class="fas fa-edit me-1"></i>
+                                <span class="d-none d-sm-inline">Edit</span>
+                            </a>
+                        @endif
+                        {{-- Detail button untuk semua --}}
                         <a href="#"
                            class="btn btn-outline-info btn-sm flex-fw d-flex align-items-center justify-content-center"
                            data-bs-toggle="modal" data-bs-target="#detailModal{{ $kategori->kategori_id }}">
                             <i class="fas fa-eye me-1"></i>
                             <span class="d-none d-sm-inline">Detail</span>
                         </a>
-                        <form action="{{ route('kategori.destroy', $kategori->kategori_id) }}" method="POST"
-                              class="flex-fw d-inline" onsubmit="return confirm('Yakin menghapus kategori {{ $kategori->nama }}?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center">
-                                <i class="fas fa-trash me-1"></i>
-                                <span class="d-none d-sm-inline">Hapus</span>
-                            </button>
-                        </form>
+                        {{-- Delete button hanya untuk admin --}}
+                        @if(auth()->user()->role === 'admin')
+                            <form action="{{ route('kategori.destroy', $kategori->kategori_id) }}" method="POST"
+                                  class="flex-fw d-inline" onsubmit="return confirm('Yakin menghapus kategori {{ $kategori->nama }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-trash me-1"></i>
+                                    <span class="d-none d-sm-inline">Hapus</span>
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -262,16 +282,19 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <a href="{{ route('kategori.edit', $kategori->kategori_id ) }}" class="btn btn-primary">
-                            <i class="fas fa-edit me-1"></i>Edit Kategori
-                        </a>
+                        {{-- Edit button di modal hanya untuk admin --}}
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('kategori.edit', $kategori->kategori_id ) }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i>Edit Kategori
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
         @empty
         <div class="col-12">
-            <div class="card shadow-lg border-0 text-center py-5">
+            <div class="card shadow-sm border text-center py-5">
                 <div class="card-body">
                     <i class="fas fa-folder-open fa-4x text-gray-300 mb-4"></i>
                     <h4 class="text-gray-500 mb-3">Belum ada kategori</h4>
@@ -282,9 +305,12 @@
                             Mulai dengan menambahkan kategori pertama Anda
                         @endif
                     </p>
-                    <a href="{{ route('kategori.create') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus-circle me-2"></i>Tambah Kategori Pertama
-                    </a>
+                    {{-- Tombol Tambah hanya untuk admin --}}
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('kategori.create') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Tambah Kategori
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -310,22 +336,15 @@
 </div>
 
 <style>
-/* Enhanced Styling */
-.text-gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
 .stat-card {
-    border-radius: 15px;
+    border-radius: 10px;
     transition: transform 0.3s ease;
-    border: none;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .stat-value {
@@ -336,7 +355,6 @@
 
 .stat-label {
     font-size: 0.875rem;
-    opacity: 0.9;
 }
 
 .stat-icon {
@@ -345,79 +363,22 @@
 
 /* Kategori Card Styling */
 .kategori-card {
-    border-radius: 12px;
+    border-radius: 10px;
     transition: all 0.3s ease;
-    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    background-color: white;
 }
 
 .kategori-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 35px rgba(0,0,0,0.15) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-.card-header-custom {
-    padding: 1.5rem;
-    color: white;
-    position: relative;
-}
-
-.category-gradient-1 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.category-gradient-2 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.category-gradient-3 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.category-gradient-4 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.category-icon {
-    font-size: 2rem;
-    opacity: 0.9;
-}
-
-.category-badge {
-    border-radius: 20px;
-    padding: 0.5rem 0.75rem;
-    font-weight: 600;
-}
-
-.category-title {
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-.category-description {
+.kategori-description {
     min-height: 60px;
 }
 
-.category-meta {
+.kategori-meta {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -428,10 +389,11 @@
     align-items: center;
 }
 
-.category-actions .btn {
-    border-radius: 8px;
+.kategori-actions .btn {
+    border-radius: 6px;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
+    border: 1px solid #dee2e6;
 }
 
 .flex-fw {
@@ -440,20 +402,21 @@
 
 /* Enhanced Pagination */
 .pagination .page-link {
-    border-radius: 8px;
+    border-radius: 6px;
     margin: 0 2px;
-    border: none;
+    border: 1px solid #dee2e6;
     color: #6c757d;
 }
 
 .pagination .page-item.active .page-link {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .category-actions {
+    .kategori-actions {
         flex-direction: column;
     }
 
@@ -461,8 +424,21 @@
         font-size: 1.5rem;
     }
 
-    .category-meta {
+    .kategori-meta {
         flex-direction: column;
+    }
+
+    .kategori-meta .row .col-6 {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .kategori-meta .row .col-6:last-child {
+        margin-bottom: 0;
+    }
+
+    .kategori-meta .text-end {
+        text-align: left !important;
     }
 }
 </style>
@@ -486,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.kategori-card');
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px)';
+            this.style.transform = 'translateY(-5px)';
             this.style.transition = 'all 0.3s ease';
         });
 

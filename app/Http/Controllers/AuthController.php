@@ -29,7 +29,13 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
             $request->session()->regenerate();
-            return redirect()->route('dashboard')->with('success', 'Berhasil login!');
+
+            // Redirect berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard')->with('success', 'Selamat datang, Admin!');
+            } else {
+                return redirect()->route('dashboard')->with('success', 'Berhasil login!');
+            }
         }
 
         return back()->withErrors([
@@ -43,7 +49,7 @@ class AuthController extends Controller
         return view('pages.auth.register');
     }
 
-    // proses registrasi
+    // proses registrasi - default role = user
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -56,11 +62,12 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role' => 'user', // Default role untuk registrasi
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat!');
+        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat! Anda login sebagai User.');
     }
 
     // logout
@@ -70,34 +77,5 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login')->with('success', 'Anda telah logout.');
-    }
-
-    // Edit profil user login
-    public function editProfile()
-    {
-        $user = auth()->user();
-        return view('pages.user.edit-profile', compact('user'));
-    }
-
-    // Update profil user login
-    public function updateProfile(Request $request)
-    {
-        $user = auth()->user();
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|confirmed|min:6',
-        ]);
-
-        if (!empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
-        }
-
-        $user->update($validated);
-
-        return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui!');
     }
 }

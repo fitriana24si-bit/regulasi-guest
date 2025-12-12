@@ -1,6 +1,7 @@
 @extends('layouts.guest.main')
 
 @section('title', 'Data Warga | Regulasi Desa')
+@include('layouts.guest.css')
 
 @section('content')
 <style>
@@ -141,6 +142,16 @@
             <h2>Data Warga</h2>
             <hr class="orange-line">
             <p>Daftar data warga yang terdaftar dalam sistem regulasi desa</p>
+            {{-- Role Badge --}}
+            <div class="mt-3">
+                <span class="badge bg-{{ auth()->user()->role === 'admin' ? 'danger' : 'primary' }} p-2">
+                    <i class="bi bi-person-badge me-1"></i>
+                    {{ auth()->user()->role === 'admin' ? 'Administrator' : 'User' }}
+                    @if(auth()->user()->role === 'user')
+                        (Hanya Baca)
+                    @endif
+                </span>
+            </div>
         </div>
 
         {{-- NEW: Search & Filter Section --}}
@@ -238,9 +249,12 @@
             <div class="pagination-info">
                 Menampilkan {{ $warga->firstItem() ?? 0 }} - {{ $warga->lastItem() ?? 0 }} dari {{ $warga->total() }} warga
             </div>
-            <a href="{{ route('warga.create') }}" class="btn btn-success px-4 shadow-sm">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Warga
-            </a>
+            {{-- Tombol Tambah hanya untuk admin --}}
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('warga.create') }}" class="btn btn-success px-4 shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Tambah Warga
+                </a>
+            @endif
         </div>
 
         {{-- Grid Card --}}
@@ -267,17 +281,24 @@
                             <p class="mb-1"><strong>Pekerjaan:</strong> {{ ucfirst($w->pekerjaan) }}</p>
                             <p class="mb-1"><strong>Telp:</strong> {{ $w->telp ?? '-' }}</p>
                             <p class="mb-3"><strong>Email:</strong> {{ $w->email ?? '-' }}</p>
+                            {{-- Action Buttons dengan role checking --}}
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('warga.edit', $w->warga_id) }}" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <form action="{{ route('warga.destroy', $w->warga_id) }}" method="POST" class="form-delete">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-danger btn-sm btn-delete">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                {{-- Edit button hanya untuk admin --}}
+                                @if(auth()->user()->role === 'admin')
+                                    <a href="{{ route('warga.edit', $w->warga_id) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                @endif
+                                {{-- Delete button hanya untuk admin --}}
+                                @if(auth()->user()->role === 'admin')
+                                    <form action="{{ route('warga.destroy', $w->warga_id) }}" method="POST" class="form-delete">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-danger btn-sm btn-delete">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -293,9 +314,12 @@
                             Mulai dengan menambahkan data warga pertama
                         @endif
                     </p>
-                    <a href="{{ route('warga.create') }}" class="btn btn-success btn-lg">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Warga Pertama
-                    </a>
+                    {{-- Tombol Tambah hanya untuk admin --}}
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('warga.create') }}" class="btn btn-success btn-lg">
+                            <i class="bi bi-plus-circle me-2"></i>Tambah Warga Pertama
+                        </a>
+                    @endif
                 </div>
             @endforelse
         </div>

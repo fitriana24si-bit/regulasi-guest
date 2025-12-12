@@ -107,14 +107,21 @@ class UserController extends Controller
 
         // Upload foto baru
         if ($request->hasFile('profile_image')) {
-
-            // Hapus foto lama
+            // Hapus foto lama jika ada
             if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
                 Storage::disk('public')->delete($user->profile_image);
             }
 
             // Simpan foto baru
             $data['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
+        }
+
+        // Hapus foto jika dicentang
+        if ($request->has('remove_profile_image')) {
+            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $data['profile_image'] = null;
         }
 
         $user->update($data);
@@ -126,6 +133,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // Hapus foto profil jika ada
         if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
             Storage::disk('public')->delete($user->profile_image);
         }

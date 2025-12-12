@@ -16,7 +16,18 @@
                     </div>
                 @endif
 
-                <form action="{{ route('profile.update') }}" method="POST">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <strong>Terjadi kesalahan:</strong>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -32,14 +43,36 @@
                             value="{{ old('email', $user->email) }}" required>
                     </div>
 
+                    {{-- PROFILE IMAGE --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Foto Profil (Opsional)</label>
+                        <input type="file" name="profile_image" class="form-control rounded-pill" accept="image/*">
+                        <small class="text-muted">Maksimal 2MB. Format: JPG, JPEG, PNG</small>
+
+                        @if($user->profile_image)
+                            <div class="mt-2">
+                                <small class="text-muted">Foto saat ini:</small><br>
+                                <img src="{{ asset('storage/' . $user->profile_image) }}"
+                                     width="100" class="mt-2 rounded-circle border" style="border-color: #ffcc66 !important;">
+                                <br>
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" name="remove_profile_image" value="1" id="remove_profile_image" class="form-check-input">
+                                    <label for="remove_profile_image" class="form-check-label text-danger">
+                                        Hapus foto profil
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Password Baru (Opsional)</label>
-                        <input type="password" name="password" class="form-control rounded-pill">
+                        <input type="password" name="password" class="form-control rounded-pill" placeholder="Kosongkan jika tidak ingin mengubah">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" class="form-control rounded-pill">
+                        <input type="password" name="password_confirmation" class="form-control rounded-pill" placeholder="Kosongkan jika tidak ingin mengubah">
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">

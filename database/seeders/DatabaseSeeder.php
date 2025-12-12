@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             KategoriDokumenSeeder::class,
             DokumenHukumSeeder::class,
             WargaSeeder::class,
-             LampiranDokumenSeeder::class
+            LampiranDokumenSeeder::class
         ]);
 
         $this->command->info('🎉 SEMUA SEEDER BERHASIL DIJALANKAN!');

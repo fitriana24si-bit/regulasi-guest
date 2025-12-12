@@ -17,9 +17,12 @@
             <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#helpModal">
                 <i class="fas fa-question-circle me-1"></i>Panduan
             </button>
-            <a href="{{ route('dokumen.create') }}" class="btn btn-primary shadow-sm">
-                <i class="fas fa-plus-circle me-1"></i>Tambah Dokumen
-            </a>
+            {{-- Tombol Tambah hanya untuk Admin --}}
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('dokumen.create') }}" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-plus-circle me-1"></i>Tambah Dokumen
+                </a>
+            @endif
         </div>
     </div>
 
@@ -27,6 +30,18 @@
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle me-2"></i>
         <div class="flex-grow-1">{{ session('success') }}</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    {{-- Notifikasi untuk User --}}
+    @if(auth()->user()->role === 'user')
+    <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        <div class="flex-grow-1">
+            <strong>Info:</strong> Anda login sebagai <strong>User</strong>.
+            Anda hanya dapat melihat dokumen, tidak dapat menambah, mengedit, atau menghapus.
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
@@ -230,22 +245,29 @@
                     <!-- Action Buttons -->
                     <div class="document-actions mt-auto">
                         <div class="btn-group w-100" role="group">
+                            {{-- Detail button untuk semua --}}
                             <a href="{{ route('dokumen.show', $dokumen->dokumen_id) }}"
                                class="btn btn-outline-primary btn-sm" title="Lihat Detail">
                                 <i class="fas fa-eye me-1"></i>Detail
                             </a>
-                            <a href="{{ route('dokumen.edit', $dokumen->dokumen_id) }}"
-                               class="btn btn-outline-warning btn-sm" title="Edit">
-                                <i class="fas fa-edit me-1"></i>Edit
-                            </a>
-                            <form action="{{ route('dokumen.destroy', $dokumen->dokumen_id) }}" method="POST"
-                                  class="d-inline" onsubmit="return confirm('Hapus dokumen ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
-                                    <i class="fas fa-trash me-1"></i>Hapus
-                                </button>
-                            </form>
+                            {{-- Edit button hanya untuk admin --}}
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('dokumen.edit', $dokumen->dokumen_id) }}"
+                                   class="btn btn-outline-warning btn-sm" title="Edit">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </a>
+                            @endif
+                            {{-- Delete button hanya untuk admin --}}
+                            @if(auth()->user()->role === 'admin')
+                                <form action="{{ route('dokumen.destroy', $dokumen->dokumen_id) }}" method="POST"
+                                      class="d-inline" onsubmit="return confirm('Hapus dokumen ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
+                                        <i class="fas fa-trash me-1"></i>Hapus
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -260,9 +282,12 @@
                     <i class="fas fa-file-contract fa-4x text-gray-300 mb-4"></i>
                     <h4 class="text-gray-500 mb-3">Belum ada dokumen</h4>
                     <p class="text-muted mb-4">Mulai dengan menambahkan dokumen pertama Anda</p>
-                    <a href="{{ route('dokumen.create') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus-circle me-2"></i>Tambah Dokumen Pertama
-                    </a>
+                    {{-- Tombol Tambah hanya untuk admin --}}
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('dokumen.create') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Tambah Dokumen Pertama
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

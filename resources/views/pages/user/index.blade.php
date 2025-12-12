@@ -65,7 +65,6 @@
 
             @if (request()->query() != [])
                 <div class="mt-2">
-                    {{-- FIXED --}}
                     <a href="{{ route('pages.user.index') }}" class="btn btn-secondary btn-sm">Reset Filter</a>
                 </div>
             @endif
@@ -89,11 +88,17 @@
                         style="border-radius: 20px; background: #fffde7;">
                         <div class="text-center">
 
-                            {{-- Circle Initial --}}
-                            <div
-                                style="width:70px;height:70px;border-radius:50%;background:#ffcc66;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;margin:auto;">
-                                {{ strtoupper(substr($u->name, 0, 2)) }}
-                            </div>
+                            {{-- Profile Image or Initials --}}
+                            @if($u->profile_image)
+                                <img src="{{ asset('storage/' . $u->profile_image) }}"
+                                     style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin:auto;border:3px solid #ffcc66;"
+                                     alt="{{ $u->name }}" class="img-fluid">
+                            @else
+                                <div
+                                    style="width:70px;height:70px;border-radius:50%;background:#ffcc66;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;margin:auto;border:3px solid #ffcc66;">
+                                    {{ strtoupper(substr($u->name, 0, 2)) }}
+                                </div>
+                            @endif
 
                             <h5 class="mt-3 fw-bold">{{ $u->name }}</h5>
                             <small class="text-muted">{{ $u->email }}</small>
@@ -113,14 +118,13 @@
 
                             {{-- Buttons --}}
                             <div class="d-flex justify-content-center gap-2 mt-2">
-
-                                {{-- EDIT - FIXED --}}
+                                {{-- EDIT --}}
                                 <a href="{{ route('pages.user.edit', $u->id) }}"
                                    class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
 
-                                {{-- DELETE - FIXED --}}
+                                {{-- DELETE --}}
                                 <form method="POST" action="{{ route('pages.user.destroy', $u->id) }}">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-sm btn-danger"
@@ -128,7 +132,6 @@
                                         <i class="bi bi-trash"></i> Hapus
                                     </button>
                                 </form>
-
                             </div>
 
                         </div>
