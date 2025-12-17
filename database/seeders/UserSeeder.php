@@ -20,10 +20,10 @@ class UserSeeder extends Seeder
 
         // Gunakan firstOrCreate untuk admin dan operator
         User::firstOrCreate(
-            ['email' => 'admin@desa.id'],
+            ['email' => 'produk@hukum.com'],
             [
-                'name' => 'Administrator',
-                'password' => Hash::make('password123'),
+                'name' => 'Admin Hukum',
+                'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]
         );
