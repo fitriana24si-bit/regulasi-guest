@@ -7,7 +7,7 @@
     <!-- Hero Section -->
     <section id="hero" class="hero section dark-background">
         <img src="https://plus.unsplash.com/premium_photo-1664299493948-1103ac2c651d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-             alt="" data-aos="fade-in">
+            alt="" data-aos="fade-in">
 
         <div class="container text-center" data-aos="fade-up" data-aos-delay="100">
             <div class="row justify-content-center">
@@ -26,10 +26,12 @@
     </section>
 
     <!-- Features/Menu Cards Section -->
-    <section id="features" class="features section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0;">
+    <section id="features" class="features section"
+        style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0;">
         <div class="container">
             <div class="section-title text-center mb-5" data-aos="fade-up">
-                <h2 style="font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #f6a723 0%, #e67e22 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                <h2
+                    style="font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #f6a723 0%, #e67e22 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                     Menu Sistem
                 </h2>
                 <p style="color: #6c757d; font-size: 18px; margin-top: 15px;">
@@ -37,10 +39,18 @@
                 </p>
                 {{-- Role Indicator --}}
                 <div class="mt-3">
-                    <span class="badge bg-{{ auth()->user()->role === 'admin' ? 'danger' : 'primary' }} p-2">
-                        <i class="bi bi-person-badge me-1"></i>
-                        {{ auth()->user()->role === 'admin' ? 'Administrator (Full Access)' : 'User (Read Only)' }}
-                    </span>
+                    @auth
+                        <span class="badge bg-{{ auth()->user()->role === 'admin' ? 'danger' : 'primary' }} p-2">
+                            <i class="bi bi-person-badge me-1"></i>
+                            {{ auth()->user()->role === 'admin' ? 'Administrator (Full Access)' : 'User (Read Only)' }}
+                        </span>
+                    @else
+                        <span class="badge bg-secondary p-2">
+                            <i class="bi bi-person me-1"></i>
+                            Guest
+                        </span>
+                    @endauth
+
                 </div>
             </div>
 
@@ -102,20 +112,23 @@
                 </div>
 
                 <!-- Card User - Hanya untuk Admin -->
-                @if(auth()->user()->role === 'admin')
-                    <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                        <a href="{{ route('pages.user.index') }}" class="feature-card">
-                            <div class="icon-box">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <h3>User</h3>
-                            <p>Manajemen pengguna sistem</p>
-                            <div class="arrow">
-                                <i class="bi bi-arrow-right"></i>
-                            </div>
-                        </a>
-                    </div>
-                @endif
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                            <a href="{{ route('pages.user.index') }}" class="feature-card">
+                                <div class="icon-box">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <h3>User</h3>
+                                <p>Manajemen pengguna sistem</p>
+                                <div class="arrow">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    @endif
+                @endauth
+
 
                 <!-- Card Warga -->
                 <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="600">
@@ -166,7 +179,8 @@
     <section id="team" class="team section" style="background: white; padding: 80px 0;">
         <div class="container">
             <div class="section-title text-center mb-5" data-aos="fade-up">
-                <h2 style="font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #f6a723 0%, #e67e22 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                <h2
+                    style="font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #f6a723 0%, #e67e22 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                     Tim Pengembang
                 </h2>
                 <p style="color: #6c757d; font-size: 18px; margin-top: 15px;">
@@ -179,7 +193,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="team-card">
                         <div class="team-image">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="Developer 1">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+                                alt="Developer 1">
                             <div class="team-overlay">
                                 <div class="social-links">
                                     <a href="https://linkedin.com/in/yourprofile" target="_blank" title="LinkedIn">
@@ -188,7 +203,8 @@
                                     <a href="https://github.com/yourprofile" target="_blank" title="GitHub">
                                         <i class="bi bi-github"></i>
                                     </a>
-                                    <a href="https://www.instagram.com/ftrntsy/followers/" target="_blank" title="Instagram">
+                                    <a href="https://www.instagram.com/ftrntsy/followers/" target="_blank"
+                                        title="Instagram">
                                         <i class="bi bi-instagram"></i>
                                     </a>
                                     <a href="fitriana24si@mahasiswa.pcr.ac.id" title="Email">
@@ -210,7 +226,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="team-card">
                         <div class="team-image">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" alt="Developer 2">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
+                                alt="Developer 2">
                             <div class="team-overlay">
                                 <div class="social-links">
                                     <a href="https://linkedin.com/in/yourprofile" target="_blank" title="LinkedIn">
@@ -241,7 +258,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="team-card">
                         <div class="team-image">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" alt="Developer 3">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop"
+                                alt="Developer 3">
                             <div class="team-overlay">
                                 <div class="social-links">
                                     <a href="https://linkedin.com/in/yourprofile" target="_blank" title="LinkedIn">
@@ -527,6 +545,7 @@
                 opacity: 0;
                 transform: translateY(40px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
