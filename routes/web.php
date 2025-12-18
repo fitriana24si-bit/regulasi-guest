@@ -176,3 +176,4 @@ Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
 Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
     Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 });
+
