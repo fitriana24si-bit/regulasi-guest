@@ -8,6 +8,7 @@ use App\Http\Controllers\Kategori;
 use App\Http\Controllers\Dokumen;
 use App\Http\Controllers\Lampiran;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -163,10 +164,11 @@ Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
 | Profile - Untuk User dan Admin
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile/upload', [ProfileController::class, 'upload'])->name('profile.upload');
+Route::middleware(['auth.check'])->group(function () {
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -177,3 +179,10 @@ Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
     Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 });
 
+
+Route::prefix('media')->name('media.')->group(function () {
+    Route::get('/', [MediaController::class, 'index'])->name('index');
+    Route::get('/create', [MediaController::class, 'create'])->name('create');
+    Route::post('/', [MediaController::class, 'store'])->name('store');
+    Route::delete('/{id}', [MediaController::class, 'destroy'])->name('destroy');
+});

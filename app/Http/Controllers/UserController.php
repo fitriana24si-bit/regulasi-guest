@@ -142,4 +142,50 @@ class UserController extends Controller
 
         return back()->with('success', 'User berhasil dihapus!');
     }
+
+    // =============================
+// PROFILE USER (USER LOGIN)
+// =============================
+public function profile()
+{
+    return view('pages.user.profile', [
+        'user' => auth()->user()
+    ]);
+}
+
+public function updateProfile(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'name'  => 'required',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6|confirmed',
+        'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $data = [
+        'name'  => $request->name,
+        'email' => $request->email,
+    ];
+
+    if ($request->filled('password')) {
+        $data['password'] = Hash::make($request->password);
+    }
+
+    if ($request->hasFile('profile_image')) {
+        if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+            Storage::disk('public')->delete($user->profile_image);
+        }
+
+        $data['profile_image'] = $request
+            ->file('profile_image')
+            ->store('profile_images', 'public');
+    }
+
+    $user->update($data);
+
+    return back()->with('success', 'Profil berhasil diperbarui');
+}
+
 }

@@ -28,74 +28,51 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // FILTERING LOGIC
-    public function scopeFilter($query, $filters)
+    // =============================
+    // PROFILE IMAGE URL (🔥 FIX UTAMA)
+    // =============================
+    public function getProfileImageUrlAttribute()
     {
-        if (! empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('name', 'like', "%{$filters['search']}%")
-                  ->orWhere('email', 'like', "%{$filters['search']}%");
-            });
+        if (!$this->profile_image) {
+            return null;
         }
 
-        if (! empty($filters['role']) && $filters['role'] !== 'all') {
-            $query->where('role', $filters['role']);
+        // Kalau sudah ada storage/
+        if (str_starts_with($this->profile_image, 'storage/')) {
+            return asset($this->profile_image);
         }
 
-        if (! empty($filters['status']) && $filters['status'] !== 'all') {
-            if ($filters['status'] === 'verified') {
-                $query->whereNotNull('email_verified_at');
-            }
-            if ($filters['status'] === 'unverified') {
-                $query->whereNull('email_verified_at');
-            }
-        }
-
-        if (! empty($filters['sort'])) {
-            switch ($filters['sort']) {
-                case 'oldest':     $query->orderBy('created_at', 'asc'); break;
-                case 'name_asc':   $query->orderBy('name', 'asc'); break;
-                case 'name_desc':  $query->orderBy('name', 'desc'); break;
-                default:           $query->orderBy('created_at', 'desc');
-            }
-        }
-
-        return $query;
+        return asset('storage/' . $this->profile_image);
     }
 
-    // ========== TAMBAHKAN METHOD BERIKUT ==========
-
-    // Cek apakah user adalah admin
+    // =============================
+    // ROLE HELPERS
+    // =============================
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    // Cek apakah user adalah user biasa
     public function isUser(): bool
     {
         return $this->role === 'user';
     }
 
-    // Scope untuk query admin
     public function scopeAdmins($query)
     {
         return $query->where('role', 'admin');
     }
 
-    // Scope untuk query user biasa
     public function scopeUsers($query)
     {
         return $query->where('role', 'user');
     }
 
-    // Get role label
     public function getRoleLabelAttribute(): string
     {
         return $this->role === 'admin' ? 'Admin' : 'User';
     }
 
-    // Get role badge class
     public function getRoleBadgeClassAttribute(): string
     {
         return $this->role === 'admin' ? 'badge bg-danger' : 'badge bg-primary';

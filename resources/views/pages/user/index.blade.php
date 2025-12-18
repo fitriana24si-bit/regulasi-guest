@@ -20,8 +20,7 @@
             <div class="row g-2">
 
                 <div class="col-md-3">
-                    <input type="text" name="search" class="form-control"
-                        placeholder="Cari nama / email"
+                    <input type="text" name="search" class="form-control" placeholder="Cari nama / email"
                         value="{{ request('search') }}">
                 </div>
 
@@ -37,7 +36,8 @@
                     <select name="status" class="form-select">
                         <option value="all">Semua Status</option>
                         <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
-                        <option value="unverified" {{ request('status') == 'unverified' ? 'selected' : '' }}>Unverified</option>
+                        <option value="unverified" {{ request('status') == 'unverified' ? 'selected' : '' }}>Unverified
+                        </option>
                     </select>
                 </div>
 
@@ -84,21 +84,23 @@
                         </div>
                     @endif
 
-                    <div class="card shadow-sm p-3"
-                        style="border-radius: 20px; background: #fffde7;">
+                    <div class="card shadow-sm p-3" style="border-radius: 20px; background: #fffde7;">
                         <div class="text-center">
 
                             {{-- Profile Image or Initials --}}
-                            @if($u->profile_image)
-                                <img src="{{ asset('storage/' . $u->profile_image) }}"
-                                     style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin:auto;border:3px solid #ffcc66;"
-                                     alt="{{ $u->name }}" class="img-fluid">
+                            @if ($u->profile_image)
+                                <img src="{{ $u->profile_image_url }}"
+                                    style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin:auto;border:3px solid #ffcc66;"
+                                    alt="{{ $u->name }}">
                             @else
                                 <div
-                                    style="width:70px;height:70px;border-radius:50%;background:#ffcc66;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;margin:auto;border:3px solid #ffcc66;">
+                                    style="width:70px;height:70px;border-radius:50%;background:#ffcc66;
+        display:flex;align-items:center;justify-content:center;
+        font-size:24px;font-weight:bold;margin:auto;">
                                     {{ strtoupper(substr($u->name, 0, 2)) }}
                                 </div>
                             @endif
+
 
                             <h5 class="mt-3 fw-bold">{{ $u->name }}</h5>
                             <small class="text-muted">{{ $u->email }}</small>
@@ -119,8 +121,7 @@
                             {{-- Buttons --}}
                             <div class="d-flex justify-content-center gap-2 mt-2">
                                 {{-- EDIT --}}
-                                <a href="{{ route('pages.user.edit', $u->id) }}"
-                                   class="btn btn-sm btn-warning">
+                                <a href="{{ route('pages.user.edit', $u->id) }}" class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
 
