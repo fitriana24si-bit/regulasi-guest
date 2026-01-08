@@ -26,21 +26,18 @@
                 {{-- Form Create User --}}
                 <form action="{{ route('pages.user.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-
                     {{-- NAMA --}}
                     <div class="mb-3">
                         <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
                         <input type="text" id="name" name="name" class="form-control rounded-pill"
                                value="{{ old('name') }}" placeholder="Masukkan nama" required>
                     </div>
-
                     {{-- EMAIL --}}
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">Email</label>
                         <input type="email" id="email" name="email" class="form-control rounded-pill"
                                value="{{ old('email') }}" placeholder="Masukkan email" required>
                     </div>
-
                     {{-- ROLE (SELECT) --}}
                     <div class="mb-3">
                         <label for="role" class="form-label fw-semibold">Role</label>
@@ -50,28 +47,24 @@
                             <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
                         </select>
                     </div>
-
                     {{-- PROFILE IMAGE --}}
                     <div class="mb-3">
                         <label for="profile_image" class="form-label fw-semibold">Foto Profil (Opsional)</label>
                         <input type="file" id="profile_image" name="profile_image" class="form-control rounded-pill" accept="image/*">
                         <small class="text-muted">Maksimal 2MB. Format: JPG, JPEG, PNG</small>
                     </div>
-
                     {{-- PASSWORD --}}
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
                         <input type="password" id="password" name="password" class="form-control rounded-pill"
                                placeholder="Masukkan password" required>
                     </div>
-
                     {{-- KONFIRM PASSWORD --}}
                     <div class="mb-4">
                         <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Password</label>
                         <input type="password" id="password_confirmation" name="password_confirmation"
                                class="form-control rounded-pill" placeholder="Ulangi password" required>
                     </div>
-
                     {{-- BUTTON --}}
                     <div class="d-flex justify-content-between">
                         <a href="{{ route('pages.user.index') }}" class="btn btn-outline-secondary rounded-pill px-4">

@@ -51,4 +51,24 @@ class MediaController extends Controller
 
         return back()->with('success', 'File dihapus');
     }
+
+    public function download($id)
+{
+    $media = Media::findOrFail($id);
+
+    $path = 'lampiran/' . $media->file_name;
+
+    if (!Storage::disk('public')->exists($path)) {
+        abort(404, 'File tidak ditemukan');
+    }
+
+    return Storage::disk('public')->download(
+        $path,
+        $media->file_name,
+        [
+            'Content-Type' => $media->mime_type
+        ]
+    );
+}
+
 }

@@ -14,7 +14,6 @@
                 <div class="col-lg-8">
                     <h2>Selamat Datang Di Website Regulasi Desa</h2>
                     <p>Ini adalah halaman utama</p>
-                    <a href="#features" class="btn-get-started">Mulai Sekarang</a>
                 </div>
             </div>
         </div>

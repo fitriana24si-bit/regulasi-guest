@@ -1,14 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RegnaController;
-use App\Http\Controllers\WargaController;
-use App\Http\Controllers\Kategori;
 use App\Http\Controllers\Dokumen;
+use App\Http\Controllers\Kategori;
 use App\Http\Controllers\Lampiran;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\RegnaController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [RegnaController::class, 'dashboard'])->name('landing');
-
 
 Route::prefix('guest')->middleware('guest')->group(function () {
     Route::get('/jenis/create', [RegnaController::class, 'jenisCreateGuest'])->name('guest.jenis.create');
@@ -128,8 +126,6 @@ Route::prefix('dokumen')->middleware(['auth.check'])->group(function () {
     Route::get('/{dokumen}', [Dokumen::class, 'show'])->name('dokumen.show');
 });
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Warga - USER: lihat, ADMIN: CRUD
@@ -153,10 +149,27 @@ Route::prefix('warga')->middleware(['auth.check'])->group(function () {
 | Lampiran - Untuk User dan Admin
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
-    Route::resource('lampiran', Lampiran::class);
-    Route::get('/lampiran/{id}/download', [Lampiran::class, 'download'])
-        ->name('lampiran.download');
+// SEMUA LOGIN (user & admin)
+Route::middleware(['auth.check'])->group(function () {
+
+    Route::get('/lampiran', [Lampiran::class, 'index'])->name('lampiran.index');
+
+    // 🔥 CREATE HARUS DI ATAS
+    Route::get('/lampiran/create', [Lampiran::class, 'create'])
+        ->middleware('role:admin')
+        ->name('lampiran.create');
+
+    Route::get('/lampiran/{id}', [Lampiran::class, 'show'])
+        ->name('lampiran.show');
+
+    Route::get('/lampiran/media/{id}/download', [Lampiran::class, 'downloadMedia'])
+        ->name('lampiran.media.download');
+});
+
+// ADMIN ACTION
+Route::middleware(['auth.check', 'role:admin'])->group(function () {
+    Route::post('/lampiran', [Lampiran::class, 'store'])->name('lampiran.store');
+    Route::delete('/lampiran/{id}', [Lampiran::class, 'destroy'])->name('lampiran.destroy');
 });
 
 /*
@@ -169,7 +182,6 @@ Route::middleware(['auth.check'])->group(function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | Riwayat - Untuk User dan Admin
@@ -178,7 +190,6 @@ Route::middleware(['auth.check'])->group(function () {
 Route::middleware(['auth.check', 'role:user,admin'])->group(function () {
     Route::get('/riwayat', [RegnaController::class, 'riwayat'])->name('riwayat.index');
 });
-
 
 Route::prefix('media')->name('media.')->group(function () {
     Route::get('/', [MediaController::class, 'index'])->name('index');

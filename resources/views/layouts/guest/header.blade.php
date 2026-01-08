@@ -118,13 +118,7 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{ route('riwayat.index') }}"
-                        class="{{ request()->routeIs('riwayat.*') ? 'active' : '' }}">
-                        Riwayat
-                    </a>
-                </li>
-
+               
                 {{-- ✅ Tampilkan Login jika belum login, dan Logout jika sudah login --}}
                 @auth
                     <li>

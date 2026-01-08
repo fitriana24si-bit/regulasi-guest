@@ -8,25 +8,27 @@
         <div class="card p-4 mt-3">
 
             <p><strong>Dokumen:</strong> {{ $lampiran->dokumen->judul ?? '-' }}</p>
-            <p><strong>Nama File:</strong> {{ basename($lampiran->file_path) }}</p>
-            <p><strong>Tipe:</strong> {{ strtoupper($lampiran->tipe_file) }}</p>
-            <p><strong>Ukuran:</strong> {{ number_format($lampiran->ukuran_file / 1024, 2) }} KB</p>
 
+            @foreach ($lampiran->media as $media)
+                <p><strong>Nama File:</strong> {{ $media->file_name }}</p>
+                <p><strong>Tipe:</strong> {{ strtoupper($media->mime_type) }}</p>
 
-            <a href="{{ asset('storage/' . $lampiran->file_path) }}" class="btn btn-success" download>
-                Download File
-            </a>
+                <a href="{{ route('lampiran.media.download', $media->media_id) }}" class="btn btn-success mt-2">
+                    <i class="fas fa-download me-1"></i> Download File
+                </a>
+            @endforeach
 
-            <a href="{{ route('lampiran.edit', $lampiran->lampiran_id) }}" class="btn btn-warning">
-                Edit
-            </a>
+            @if (auth()->check() && auth()->user()->role === 'admin')
+                <form action="{{ route('lampiran.destroy', $lampiran->lampiran_id) }}" method="POST" class="mt-3"
+                    onsubmit="return confirm('Yakin ingin menghapus lampiran ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Hapus
+                    </button>
+                </form>
+            @endif
 
-            <form action="{{ route('lampiran.destroy', $lampiran->lampiran_id) }}" method="POST" class="d-inline"
-                onsubmit="return confirm('Yakin ingin menghapus lampiran ini?')">
-                @csrf
-                @method('DELETE')
-                <button class="btn btn-danger">Hapus</button>
-            </form>
 
         </div>
 

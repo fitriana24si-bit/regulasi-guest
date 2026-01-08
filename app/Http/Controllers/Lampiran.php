@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\DokumenHukum;
@@ -16,7 +15,7 @@ class Lampiran extends Controller
             ->when($request->search, function ($q) use ($request) {
                 $q->whereHas('media', function ($m) use ($request) {
                     $m->where('file_name', 'like', "%{$request->search}%")
-                      ->orWhere('mime_type', 'like', "%{$request->search}%");
+                        ->orWhere('mime_type', 'like', "%{$request->search}%");
                 });
             })
             ->latest()
@@ -27,15 +26,22 @@ class Lampiran extends Controller
 
     public function create()
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
         $dokumen = DokumenHukum::all();
         return view('pages.lampiran.create', compact('dokumen'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
         $request->validate([
             'dokumen_id' => 'required',
-            'file.*' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'file.*'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         foreach ($request->file('file') as $f) {
@@ -48,7 +54,7 @@ class Lampiran extends Controller
             ]);
 
             // 2️⃣ SIMPAN FILE KE STORAGE
-            $filename = time().'_'.$f->getClientOriginalName();
+            $filename = time() . '_' . $f->getClientOriginalName();
             $f->storeAs('lampiran', $filename, 'public');
 
             // 3️⃣ SIMPAN KE TABEL MEDIA
@@ -66,17 +72,43 @@ class Lampiran extends Controller
 
     public function destroy($id)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
         $lampiran = LampiranDokumen::with('media')->findOrFail($id);
 
-        // HAPUS FILE FISIK + MEDIA
         foreach ($lampiran->media as $m) {
-            Storage::disk('public')->delete('lampiran/'.$m->file_name);
+            Storage::disk('public')->delete('lampiran/' . $m->file_name);
             $m->delete();
         }
 
-        // HAPUS LAMPIRAN
         $lampiran->delete();
 
-        return back()->with('success', 'Lampiran berhasil dihapus');
+        return redirect()->route('lampiran.index')
+            ->with('success', 'Lampiran berhasil dihapus');
     }
+
+    public function show($id)
+    {
+        $lampiran = LampiranDokumen::with([
+            'dokumen',
+            'media',
+        ])->findOrFail($id);
+
+        return view('pages.lampiran.detail', compact('lampiran'));
+    }
+
+    public function downloadMedia($id)
+    {
+        $media = Media::findOrFail($id);
+
+        $path = 'lampiran/' . $media->file_name;
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return Storage::disk('public')->download($path, $media->file_name);
+    }
+
 }

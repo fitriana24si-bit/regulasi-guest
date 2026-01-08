@@ -76,7 +76,12 @@ class Dokumen extends Controller
      */
     public function show($id)
     {
-        $dokumen = DokumenHukum::with(['jenis', 'kategori', 'lampiran'])->findOrFail($id);
+        $dokumen = DokumenHukum::with([
+            'jenis',
+            'kategori',
+            'lampiran.media',
+        ])->findOrFail($id);
+
         return view('pages.dokumen.show', compact('dokumen'));
     }
 
